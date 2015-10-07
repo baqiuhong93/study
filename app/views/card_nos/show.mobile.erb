@@ -1,0 +1,56 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            学习卡注册
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+     <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> <a href="<%= new_card_no_path %>">学习卡注册</a>>注册成功
+    </h3>
+    <h3 class="news_map3" style=" border-bottom:none;">
+        *恭喜你，学习卡注册成功！
+    </h3>
+    <div class="my_classlist2">
+        <ul>
+            <% @user_accounts.each do |user_account| %>
+            <li>
+                <p>
+                    课程名称：<%= user_account.product_name %>
+                </p>
+                <p>
+                    有效期：<span><%= user_account.effect_str %></span>
+                </p>
+                <p>
+                    <a href="<%= accounts_show_path(:id => user_account.id) %>">听课</a>
+                </p>
+                <div class="clear">
+                </div>
+            </li>
+            <% end %>
+        </ul>
+        <div class="clear">
+        </div>
+    </div>
+
+
+
+    <br />
+
+    <p class="buytools2"><a href="<%= new_card_no_path %>" class="yel">继续注卡 </a> <a href="<%= accounts_index_path %>">&nbsp;去听课&nbsp;</a>
+        
+    </p>
+
+   <br /><br />
+     <br />
+      <h3 class="hp_grh3 topborder">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+<%=cms_part_page("589") %>

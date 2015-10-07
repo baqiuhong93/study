@@ -1,0 +1,67 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;">名称：</td>
+		<td><%= @teacher.name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;">编码：</td>
+		<td><%= @teacher.code %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">简介：</td>
+		<td><%= @teacher.description %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">分类：</td>
+		<td>
+			<% eval(@teacher.ttype).each do |k| %>
+			<%= Teacher.ttype_hash[k] %> 
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">无效：</td>
+		<td><%= @teacher.deleted_text %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">排序：</td>
+		<td><%= @teacher.sortrank %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">科目：</td>
+		<td><% 
+			_subject_first = eval(@teacher.subject_first.gsub("\"",""))
+			_subject_second = eval(@teacher.subject_second.gsub("\"",""))
+			 %>
+			<% Teacher.subject_first_array.each do |l| %>
+				<% if _subject_first.include?(l[:id]) %>
+				<%= l[:text] %> 
+				(
+				<% Teacher.subject_second_hash[l[:id]].each do |m| %>
+					<% if _subject_second.include?(m[:id])%>
+						<%= m[:text] %> 
+					<% end %>
+				<% end %>
+				) 
+				<% end %>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">推荐：</td>
+		<td><%= @teacher.recommend_text %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">创建时间：</td>
+		<td><%= format_date(@teacher.created_at) %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">修改时间：</td>
+		<td><%= format_date(@teacher.updated_at) %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;">图片：</td>
+		<td><img src="<%= file_url @teacher.img_path %>" alt="<%= @teacher.name %>"></td>
+	</tr>
+</table>

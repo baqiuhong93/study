@@ -1,0 +1,10 @@
+<%= simple_form_for @card_no, :url => (@card_no.id.present? ? admin_card_card_no_path(@card, @card_no) : admin_card_card_nos_path(@card)), :html => { :class => 'form-horizontal' } do |f| %>
+    <div class="input string optional"><label class="string optional control-label" for="prefix_name">前缀:</label><input class="string optional" id="prefix_name" name="prefix_name" size="50" type="text" /></div>
+	<% if @card.is_yihao? %>
+	<div class="number string optional"><label class="number optional control-label" for="num">数量:</label><input class="number optional" id="num" name="num" size="6" type="text" /></div>
+	<% end %>
+    <div class="form-actions">
+    <%= f.submit "保存", :class => 'btn-primary', :disable_with => '保存...' %>
+    <%= link_to '取消', admin_card_card_nos_path(@card), :class => 'btn' %>
+  </div>
+<% end -%> 

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">卡号</Data></Cell>
+        <Cell><Data ss:Type="String">密码</Data></Cell>
+        <Cell><Data ss:Type="String">状态</Data></Cell>
+        <Cell><Data ss:Type="String">创建时间</Data></Cell>
+      </Row>
+    <% @card_nos.each do |card_no| %>
+      <Row>
+        <Cell><Data ss:Type="String"><%= card_no.code %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= card_no.passwd %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= CardNo.status_hash[card_no.status] %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= format_date(card_no.created_at) %></Data></Cell>
+      </Row>
+    <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

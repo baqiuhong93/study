@@ -1,0 +1,104 @@
+<% @_page_title =   "欣瑞教育用户中心" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="min whHd960 mt10">
+	<%= render "public/left_nav2" %>
+	<div class="minR">
+		<div class="gg_lan">
+			<div class="gg_lanBoxL bd">
+				<div class="ttBox3"><b>网校最新公告</b></div>
+				<div class="gg_lanBoxLT">
+					<ul id="movieList">
+					
+					
+
+            <li><% SystemMessage.where(:type => 1, "$or" => [{:user_id => 0}, {:user_id => @current_user.uid}]).sort(:created_at => -1).skip(0).limit(2).each do |message| %>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= message.content[0...120] %>…<a href="<%= user_messages_system_path %>">详细</a></li>
+<%end %> 
+				
+				
+					
+					</ul>
+				</div>
+			</div>
+			<div class="gg_lanBoxR bd">
+				<div class="div_dl">
+					<div class="div_dt"><a class="mink_perImg" href="<%= user_profile_path %>"><img src="<%= image_clip_path(@current_user.avatar_path, '82', GlobalSettings.image_domain+'2015112/images/fanc.jpg') %>" width="82" height="82"/></div>
+					<div class="div_dd">
+						<p><%= @current_user.name %></p>
+						<p><a href="<%= user_profile_path %>"><img src="<%= GlobalSettings.image_domain %>2015112/images/btn1.jpg"  width="65" height="23"  /></a></p>
+						<p><a href="<%= user_password_path %>"><img src="<%= GlobalSettings.image_domain %>2015112/images/btn2.jpg"  width="65" height="23" /></a></p>
+					</div>
+				</div>
+				<div class="gg_lanBoxIcon">
+					<ul>
+						<li><a href="<%= accounts_index_path %>">我的课程</a></li>
+						<li class="gg_lanBoxIcon1"><a href="<%= questions_path %>">我的问答</a></li>
+						<li class="gg_lanBoxIcon2"><a href="<%= orders_path %>">我的订单</a></li>
+						<li class="gg_lanBoxIcon3"><a href="<%= classworks_path %>">我的作业</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="my_kc mt10 bd">
+			<div class="ttBox3"><b class="icon1">我的课程</b></div>	
+				<% if @user_accounts.empty? %>
+		       <div class="my_kcXz bd">
+				<p>你还没有选课哟！赶快选课吧！</p>
+				<p><a href="http://bm.xredu.com" target="_blank">选课中心>></a></p>
+			    </div>
+			   <% end %>
+			   <% @user_accounts.each do |user_account| %>
+               <% learn_schedule = LearnSchedule.where(:account_id => user_account.id).first %>
+                <div class="minRKcList bd">
+                	<a href="<%= product_path_domain(user_account.product_id) %>" class="minRKcList1_1" title="<%= user_account.product_name %>"><%= user_account.product_name %></a>
+                    <p id="effect_msg_<%= user_account.id %>"></p>
+					<% if user_account.effective? %>
+                    <a href="<%= accounts_show_path(:id => user_account.id) %>" class="minRKcList1_2"><img src="<%= GlobalSettings.image_domain %>2015112/images/btn3.jpg" width="73" height="22" /></a>
+					 <% end %>
+                	<div class="clear"></div>	
+                </div>
+				<% end %>
+			<div class="ttBox4 mt10"><b>我可能感兴趣的课程：</b></div>
+			<div class="my_kcTxb">
+				<%= cms_part_page("23") %>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function effect_msg(account_id,effect_type, effect_str, created_at) {
+		var _now = new Date();
+		_now.setTime(<%= Time.now.to_i * 1000 %>);
+		var _ta = split_date(created_at);
+		var _created_at = new Date(_ta[0], _ta[1]-1, _ta[2], _ta[3], _ta[4], _ta[5]);
+		_ta = split_date(effect_str);
+		var _effect_at = new Date(_ta[0], _ta[1]-1, _ta[2], _ta[3], _ta[4], _ta[5]);
+		if (_now.getTime() >= _effect_at.getTime()) {
+			$("#effect_msg_"+account_id).text("课程已过期 ");
+		} else {
+			$("#effect_msg_"+account_id).text("已学" + (((_now.getTime()-_created_at.getTime()).toFixed(2)/86400000)).toFixed(0) + "天，剩"+(((_effect_at.getTime()-_now.getTime()).toFixed(2)/86400000)).toFixed(0)+"天。");
+		}
+		
+}
+function split_date(d) {
+	var _d = d.split(" ")[0];
+	var _t = d.split(" ")[1];
+	var _da = _d.split("-");
+	var _ta = _t.split(":");
+	return [_da[0],_da[1],_da[2],_ta[0],_ta[1],_ta[2]];
+}
+<% @user_accounts.each do |user_account| %>
+effect_msg(<%= user_account.id %>, '<%= user_account.effect_type %>', '<%= user_account.effect_str %>', '<%= format_date(user_account.created_at) %>');
+<% end %>	
+</script>	
+<% end -%>

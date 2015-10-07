@@ -1,0 +1,55 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>单号:</strong></strong></td><td><%= @order.code %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>用户名:</strong></strong></td><td><%= @order.user_name %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>姓名:</strong></strong></td><td><%= @order.user.full_name %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>电话:</strong></strong></td><td><%= @order.user.mobile_phone %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>地址:</strong></strong></td><td><%= @order.user.address %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>IP:</strong></strong></td><td><%= @order.ip %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>支付方式:</strong></strong></td><td><%= Order.pay_type_hash[@order.pay_type] %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>状态:</strong></strong></td><td><%= Order.status_hash[@order.status] %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>总金额:</strong></strong></td><td><%= @order.amount %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>折扣金额:</strong></strong></td><td><%= @order.discount_amount %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>备注:</strong></strong></td><td><%= @order.remark %></td>
+	</tr>
+	<tr>
+		<td style="text-align:right;"><strong>后台备注:</strong></strong></td><td colspan="3"><%= @order.manage_remark %></td>
+	</tr>
+</table>
+产品列表：
+<table class="table table-bordered">
+	<tr>
+		<td width="40%"><strong>名称</strong></strong></td><td><strong>原价</strong></td><td><strong>售价</strong></td><td><strong>折扣金额</strong></td><td><strong>赠品</strong></td>
+	</tr>
+	<% @order.order_items.each do |order_item| %>
+	<tr>
+		<td><%= order_item.product_name %></td>
+		<td><%= order_item.origin_price %>元</td>
+		<td><%= order_item.sale_price %>元</td>
+		<td><%= order_item.discount_amount %>元</td>
+		<td><%= order_item.is_gift_show %></td>
+	</tr>
+	<% end %>
+</table>
+

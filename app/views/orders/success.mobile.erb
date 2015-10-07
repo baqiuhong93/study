@@ -1,0 +1,134 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            订单核对
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">课程商店</a>> <a href="<%=cart_index_path %>">购物车</a>>订单生成
+    </h3>
+   <h3 class="news_map3">
+        *订单提交成功，请尽快付款！
+    </h3>
+    <h3 class="hp_grh3">
+        生成订单
+    </h3>
+    <div class="pro_list3">
+        <ul>
+         <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                   
+                    <tr>
+                        <td class="lefttd">
+                            订单号：
+                        </td>
+                        <td>
+                          <%= @order.code %>
+                        </td>
+                       
+                    </tr>
+                    <tr>
+                        <td class="lefttd">
+                            支付方式：
+                        </td>
+                        <td>
+                           <%= @order.pay_type_text %>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                     <td class="lefttd">
+                            下单时间：
+                        </td>
+                        <td>
+                           <%= format_date(@order.created_at) %>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+            <% @order.order_items.each do |item| %>
+            <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="lefttd">
+                            课程名称：
+                        </td>
+                        <td colspan="3">
+                            <%= item.product_name %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lefttd">
+                            订单金额：
+                        </td>
+                        <td>
+                            <span>￥<%= format_money(item.sale_price) %></span>
+                        </td>
+                        <td class="lefttd">
+                            优惠金额：
+                        </td>
+                        <td>
+                            <b>￥0.00</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lefttd">
+                            小计：
+                        </td>
+                        <td>
+                            <span>￥<%= format_money(item.sale_price_mul_num) %></span>元
+                        </td>
+                        <td class="lefttd">
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+            <% end %>
+        </ul>
+    </div>
+    <h2 class="pro_orderTotal">
+        <span class="pro_orderTotal_l">优惠合计：</span> <span class="pro_orderTotal_r">订单总金额：余额已支付<span class="cor_red">￥<%= format_money(@order.balance_amount) %></span>元 + 待支付<span class="cor_red">￥<%= format_money(@order.total_amount) %></span>元
+        </span>
+        <div class="clear">
+        </div>
+    </h2>
+ <br />
+ <% if @order.weifukuan? && (@order.zhifubao? || @order.kuaiqian?) %>
+    <p class="buytools" style="border: none;">
+        <a href="<%= pay_order_path(:id => @order.code) %>" title="付款" target="_system_pay">继续付款</a>
+    </p>
+<% end %>
+    <br /><br /><br />
+    <script type="text/javascript">
+        var cart = [];
+        <% @order.order_items.each do |item| %>
+            cart.push({'id': '<%= item.product_id %>','brand': '欣瑞教育','variant': '<%= Product.find(item.product_id).effect_str %>' + '_' + '<%= Product.find(item.product_id).description %>','category': '<%= Product.find(item.product_id).skxx_id %>'==1?'面授':'<%= Product.find(item.product_id).skxx_id %>'==2?'网校':'<%= Product.find(item.product_id).skxx_id %>'==3?'教材':'未分类','name': '<%= item.product_name %>','price': '<%= format_money(item.sale_price) %>','quantity': 1});
+        <% end %>
+        var order = {'id': '<%= @order.code %>','affiliation': '<%= @order.pay_type_text %>','revenue': '<%= format_money(@order.total_amount+@order.balance_amount) %>'};
+    </script>
+<!--尾部 开始-->
+ <%=cms_part_page("591") %>
+<!--ga分析开始-->
+<%= content_for :javascripts do -%>
+<script type="text/javascript">/*
+ga('require', 'ec', 'ec.js');
+<% @order.order_items.each do |item| %>
+			cart.push({'id': '<%= item.product_id %>','brand': '欣瑞教育','variant': '<%= Product.find(item.product_id).effect_str %>' + '_' + '<%= Product.find(item.product_id).description %>','category': '<%= Product.find(item.product_id).skxx_id %>'==1?'面授':'<%= Product.find(item.product_id).skxx_id %>'==2?'网校':'<%= Product.find(item.product_id).skxx_id %>'==3?'教材':'未分类','name': '<%= item.product_name %>','price': '<%= format_money(item.sale_price) %>','quantity': 1});
+<% end %>
+ga('ec:setAction', 'purchase', {'id': '<%= @order.code %>','affiliation': '<%= @order.pay_type_text %>','revenue': '<%= format_money(@order.total_amount+@order.balance_amount) %>'});
+ga('send', 'event', 'Ecommerce', 'purchse','purchse-success-mobile');    // 与基础代码不同因此页面还有一个基础代码
+<% @order.order_items.each do |item| %>
+ga('ec:addProduct',{'id': '<%= item.product_id %>','name': '<%= item.product_name %>','price': '<%= format_money(item.sale_price) %>','quantity': 1});
+<% end %>
+ga('ec:setAction','checkout', {'step': 4,'option': 'Mobile'});
+ga('send', 'event', 'Ecommerce', 'Checkout', 'Step_4-Mobile');*/
+</script>
+<% end -%>
+<!--ga分析结束-->

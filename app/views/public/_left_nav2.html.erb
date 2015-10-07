@@ -1,0 +1,45 @@
+<div class="minL">
+        	<b class="ttBox1">网络课堂</b>
+            <div class="bd minLHd">
+            	<b class="ttBox2">我的课堂<span class="ttBoxIcon"></span></b>
+                <div class="minLNav">
+                    <ul>
+                        <li><a class="<%= request.fullpath.start_with?('/accounts') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= accounts_index_path %>">我已报名课程</a></li>
+                        <li><a class="<%= request.fullpath.start_with?('/notes') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_notes_path %>">我的课堂笔记</a></li>
+                        <li><a href="<%= classworks_path %>">我的作业批改</a></li>
+						<li><a href="<%= user_messages_system_path %>">网校通知公告</a></li>
+                        <li><a href="<%= questions_path %>">我的疑问解答</a></li>
+                    </ul>
+                </div>
+            	<b class="ttBox2">我的账户<span class="ttBoxIcon"></span></b>
+                <div class="minLNav">
+                    <ul>
+                        <li><a class="<%= request.fullpath.start_with?('/orders') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= orders_path %>">我的订单记录</a></li>
+                        <li><a class="<%= request.fullpath.start_with?('/money_records') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_money_records_path %>">我的账户记录</a></li>
+                        <li><a class="<%= request.fullpath.start_with?('/recharges') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_recharges_index_path %>">我要在线充值</a></li>
+                        <li><a class="<%= request.fullpath.start_with?('/card_nos') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= new_card_no_path %>">学习卡注册</a></li>
+                    </ul>
+                </div>
+
+
+                <b class="ttBox2">报班购书<span class="ttBoxIcon"></span></b>
+                <div class="minLNav">
+                    <ul>
+                        <li><a href="http://bm.xredu.com" target="_blank">一键报班</a></li>
+                        <li><a href="http://www.xredu.com/book/index.html" target="_blank">购买教材</a></li>
+                    </ul>
+                </div>
+
+
+
+                <b class="ttBox2">我的设置<span class="ttBoxIcon"></span></b>
+                <div class="minLNav">
+                    <ul>
+                        <li><a class="<%= request.fullpath.start_with?('/profile') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_profile_path %>">完善信息</a></li>
+                        <li><a class="<%= request.fullpath.start_with?('/password') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_password_path %>">修改密码</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        
+        </div>

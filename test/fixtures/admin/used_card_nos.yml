@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  card: 
+  card_no: 
+  user: 
+  user_name: MyString
+  code: MyString
+  order_code: MyString
+
+two:
+  card: 
+  card_no: 
+  user: 
+  user_name: MyString
+  code: MyString
+  order_code: MyString

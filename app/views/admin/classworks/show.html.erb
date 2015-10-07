@@ -1,0 +1,31 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>名称:</strong></td>
+		<td><%= @classwork.name %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>要求:</strong></td>
+		<td><%= @classwork.demand %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>开始时间:</strong></td>
+		<td><%= format_date(@classwork.start_at) %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>结束时间:</strong></td>
+		<td><%= format_date(@classwork.end_at) %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>作业人数:</strong></td>
+		<td><%= @classwork.work_num %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>创建时间:</strong></td>
+		<td><%= format_date(@classwork.created_at) %></td>
+	</tr>
+	<tr>
+	<td width="15%" style="text-align:right;"><strong>修改时间:</strong></td>
+	<td><%= format_date(@classwork.updated_at) %></td>
+</tr>
+	</table>

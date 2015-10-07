@@ -1,0 +1,70 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>ID:</strong></td>
+		<td><%= @user.uid %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>姓名：</strong></td>
+		<td><%= @user.full_name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>性别：</strong></td>
+		<td><%= User.gender_hash[@user.gender] %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>Email：</strong></td>
+		<td><%= @user.email %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>手机：</strong></td>
+		<td><%= @user.mobile_phone %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>地址：</strong></td>
+		<td><%= @user.address %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>余额：</strong></td>
+		<td><%= @user.balance %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>创建日期：</strong></td>
+		<td><%= format_date(@user.created_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>修改日期：</strong></td>
+		<td><%= format_date(@user.updated_at) %></td>
+	</tr>
+</table>
+<!--
+<ul class="nav nav-tabs" id="user_info_nav">
+<% if can? :read, UserAccount %>
+  <li><a href="javascript:void(0);" origin_link="<%= admin_user_accounts_path %>?utf8=✓&search[user_id_eq]=<%= @user.uid %>">听课账号</a></li>
+<% end %>
+<% if can? :read, Order %>
+  <li><a href="javascript:void(0);" origin_link="<%= admin_orders_path %>?utf8=✓&search[user_id_eq]=<%= @user.uid %>">订单</a></li>
+<% end %>
+<% if can? :read, UserMoneyRecord %>
+  <li><a href="javascript:void(0);" origin_link="<%= admin_user_money_records_path %>?utf8=✓&search[user_id_eq]=<%= @user.uid %>">账户记录</a></li>
+<% end %>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active">
+	  <iframe id="user_info_iframe" src="" frameborder="0" width="100%" height="1000"></iframe>
+  </div>
+</div>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+$(function() {
+	$("#user_info_nav li a").each(function() {
+		$(this).click(function() {
+			$("#user_info_iframe").attr("src", $(this).attr("origin_link"));	
+		});
+	});
+});
+</script>	
+<% end -%>
+-->

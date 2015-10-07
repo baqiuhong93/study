@@ -1,0 +1,238 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            订单核对
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">课程商店</a>> <a href="<%=cart_index_path %>">购物车</a>>核对订单
+    </h3>
+    <%= form_for @current_user, :url => update_user_profile_path(:format => :json), :method => :post, :html => { :id => "grxxForm" } do |f| -%>
+    <p class="hp_input_p topborder">
+        <span>姓名：</span>
+        <%= f.text_field :full_name, :max_length => 20 %>
+        <br />
+    </p>
+    <p class="hp_input_p">
+        <span>手机：</span>
+        <%= f.text_field :mobile_phone, :maxlength => 11 %>
+        <br />
+    </p>
+    <p class="hp_input_p">
+        <span>邮箱：</span>
+        <%= f.text_field :email, :maxlength => 255 %>
+        <br />
+    </p>
+    <p class="hp_input_p">
+        <span>地址：</span>
+        <%= f.text_field :address, :maxlength => 255 %>
+        <br />
+    </p>
+    <p class="hp_input_msg">
+        <span>*</span>请您准确填写个人信息，方便为您进行后续服务！
+    </p>
+    <% end %>
+    <div class="clear">
+    </div>
+    <h3 class="hp_grh3 topborder">
+        确认订单信息
+    </h3>
+    <div class="pro_list3">
+        <ul>
+            <% CartCookieUtil.get_cart(session, cookies).cartItem.each do |k,v| %>
+            <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="lefttd">
+                            课程名称：
+                        </td>
+                        <td colspan="3">
+                            <%= v.name %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lefttd">
+                            课程金额：
+                        </td>
+                        <td>
+                            <span>￥<%= format_money(v.sale_price) %></span>
+                        </td>
+                        <td class="lefttd">
+                            优惠金额：
+                        </td>
+                        <td>
+                            <b>￥0.00</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lefttd">
+                            小计：
+                        </td>
+                        <td>
+                            <span>￥<%= format_money(v.sale_price_mul_num) %></span>元
+                        </td>
+                        <td class="lefttd">
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+            <% end %>
+        </ul>
+    </div>
+    <h2 class="pro_orderTotal">
+        <span class="pro_orderTotal_l">优惠合计：</span> <span class="pro_orderTotal_r">订单总金额：<b>￥<%= format_money(CartCookieUtil.get_cart(session, cookies).get_amount) %></b>元
+        </span>
+        <div class="clear">
+        </div>
+    </h2>
+    <h2 class="pro_order_moneyh2">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/order_pop.png" />余额结算：<span>￥<span id="_user_balance"><%= format_money(@current_user.now_balance) %></span> </span>
+        <% if @current_user.now_balance > 0 %>
+    <input type="checkbox" value="1" id="use_balance" onclick="use_user_balance(this)">
+    <% end %> <span id="_user_balance_msg" style="color:#f00;"></span>
+        <a href="<%= user_recharges_index_path %>">充值> </a>
+    </h2><br />
+    <%= form_for @order, :url => cart_index_path, :html => { :id => "new_order_form" } do |f| -%>
+<%= f.hidden_field :pay_type %>
+<%= f.hidden_field :balance_amount %>
+<%= f.hidden_field :pay_code, :value => "directPay" %>
+<% end %>
+    <p class="buytools" style="border: none;">
+        <a href="javascript:void(0)" onclick="submit_order_form()">继续付款 </a>
+    </p>
+    <br /><br /><br />
+<%= content_for :javascripts do -%>
+<script type="text/javascript">
+function invoice_click() {
+    if ($("input[name=invoice_name_r]:checked").val() == "1") {
+        $("#order_invoice_name").attr("disabled", false);
+    } else {
+        $("#order_invoice_name").val('');
+        $("#order_invoice_name").attr("disabled", true);
+    }
+}
+
+function use_user_balance(obj) {
+    var _order_amount = <%= format_money(CartCookieUtil.get_cart(session, cookies).get_amount) %>;
+    var _user_balance = <%= format_money(@current_user.now_balance) %>;
+    if(obj && obj.checked) {
+        if (_user_balance > _order_amount) {
+            $('#order_balance_amount').val(_order_amount);
+            $("#_user_balance").text((_user_balance-_order_amount).toFixed(2));
+            $("#_net_pay").hide();
+        } else if(_user_balance == _order_amount) {
+            $('#order_balance_amount').val(_order_amount);
+            $("#_user_balance").text((_user_balance-_order_amount).toFixed(2));
+            $("#_net_pay").hide();
+        } else {
+            $('#order_balance_amount').val(_user_balance.toFixed(2));
+            $("#_user_balance").text("0.00");
+            $("#_user_balance_msg").text("还需支付"+(_order_amount-_user_balance).toFixed(2)+"元");
+        }
+    } else {
+        $('#order_balance_amount').val('0.00');
+        $("#_user_balance").text(_user_balance.toFixed(2));
+        $("#_user_balance_msg").text("");
+        $("#_net_pay").show();
+    }
+}
+
+function submit_order_form() {
+    
+    if ($("#user_full_name").val() == '') {
+        alert("姓名不能为空!");
+        $("#user_full_name").focus();
+        return;
+    }
+    
+    if ($("#user_mobile_phone").val() == '') {
+        alert("手机不能为空!");
+        $("#user_mobile_phone").focus();
+        return;
+    }
+    if ($("#user_address").val() == '') {
+        alert("地址不能为空!");
+        $("#user_address").focus();
+        return;
+    }
+    if ($("#user_email").val() == '') {
+        alert("邮箱不能为空!");
+        $("#user_email").focus();
+        return;
+    }
+    
+    $.post($("#grxxForm").attr("action"), $("#grxxForm").serialize(), function(data) {
+        if (data.status == "success") {
+            $("#new_order_form").submit();
+        } else {
+            alert(data.msg);
+        }
+    });
+}
+
+$(function() {
+    <% if @order.invoice_name.blank? %>
+    //$("input[name=invoice_name_r][value=0]").attr("checked",true);
+    <% else %>
+    //$("input[name=invoice_name_r][value=1]").attr("checked",true);
+    <% end %>
+    //invoice_click();
+    use_user_balance($("#use_balance").get(0));
+    $(".chgBtnList > ul > li > a").each(function(i) {
+        $(this).attr("index", i);
+        $(this).click(function() {
+            var _index = $(this).attr("index");
+            var _this_a = this;
+            $("#order_pay_type").val($(this).attr("pay_type"));
+            $(".chgConList > div").each(function(j) {
+                if(_index == j) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+                
+                $(".chgBtnList > ul > li").each(function(k) {
+                    if(_index == k) {
+                        $(this).addClass('chgCutBtn');
+                    } else {
+                        $(this).removeClass('chgCutBtn');
+                    }
+                });
+            });
+        });
+        if($(this).attr("pay_type") == "<%= @order.pay_type %>") {
+            $(this).click();
+        }
+    });
+});
+/*
+<!--ga分析开始-->
+
+ga('require', 'ec', 'ec.js');
+<% @order.order_items.each do |item| %>
+ga('ec:addProduct',{'id': '<%= item.product_id %>','name': '<%= item.product_name %>','price': '<%= format_money(item.sale_price) %>','quantity': 1});
+<% end %>
+ga('ec:setAction', 'checkout', {'step': 3,'option':'Mobile'});
+ga('send', 'event', 'Ecommerce','Checkout', 'Step_3-Mobile');    // 与基础代码不同因此页面还有一个基础代码*/
+var cartItems = [];
+<% CartCookieUtil.get_cart(session, cookies).cartItem.each do |k,v| %>
+cartItems.push({
+    'id': '<%= v.id %>',
+    'name': '<%= v.name %>',
+    'category': '<%= Product.find(v.id).skxx_id %>'==1?'面授':'<%= Product.find(v.id).skxx_id %>'==2?'网校':'<%= Product.find(v.id).skxx_id %>'==3?'教材':'未分类',
+    'brand': '欣瑞教育',
+    'variant': '<%= Product.find(v.id).effect_str %>' + '_' + '<%= Product.find(v.id).description %>',
+    'price': '<%= format_money(v.sale_price) %>',
+    'quantity': 1
+});
+<% end %>
+</script>   
+<% end -%>
+<%= cms_part_page("595") %>

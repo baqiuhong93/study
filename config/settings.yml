@@ -1,0 +1,80 @@
+defaults: &defaults
+  per_page: 30
+  page_title: 欣瑞网校
+  upload_path: /Users/flask/WebProjects/nj
+  upload_view_url: http://localhost:3001
+  upload_file_size: 5120000
+  image_types: ['image/jpeg', 'image/pjpeg', 'image/gif', 'image/png', 'image/x-png']
+  
+  provider_url: http://localhost:3000
+  
+  cms_host: xredu.com
+  
+  pay_host: localhost
+  pay_port: 8080
+  default_pay_code: directPay
+  
+  login_host: localhost
+  login_port: 3000
+  app_url: http://localhost:3001
+  
+  security_host: localhost
+  security_port: 3002
+  
+  ask_host: localhost
+  ask_port: 8080
+  ask_url: http://localhost:8080
+  
+  page_part_key: page_part
+  cate_list_key: cate_list
+  cate_more_key: cate_more
+  
+  product_url: http://localhost:3001
+  message_url: http://localhost:3004
+  message_domain: localhost
+  message_port: 3004
+  cc_id: abcd
+  
+  teacher: {'171' : {'width' : 171, 'height' : 155}, '215' : {'width' : 215, 'height' : 195}, '425' : {'width' : 425, 'height' : 385}}
+  product: {'328' : {'width' : 328, 'height' : 217}, '130' : {'width' : 130, 'height' : 130}, '140' : {'width' : 140, 'height' : 170}}
+  user: {'95' : {'width' : 95, 'height' : 94}}
+  
+  js_domain: http://asset.xredu.com/
+  css_domain: http://asset.xredu.com/
+  image_domain: http://asset.xredu.com/
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+  upload_path: /apps/file_upload
+  upload_view_url: http://fjdown.xredu.com
+  provider_url: http://login.xredu.com
+  
+  app_url: http://my.xredu.com
+  
+  js_domain: http://asset.xredu.com/
+  css_domain: http://asset.xredu.com/
+  image_domain: http://asset.xredu.com/
+  
+  login_host: login.xredu.com
+  login_port: 80
+  
+  cms_host: xredu.com
+  cms_port: 80
+  
+  security_host: security.xredu.com
+  security_port: 80
+  
+  pay_host: localhost
+  pay_port: 8081
+  
+  product_url: http://product.xredu.com
+  
+  ask_host: localhost
+  ask_port: 8082
+  ask_url: http://ask.xredu.com

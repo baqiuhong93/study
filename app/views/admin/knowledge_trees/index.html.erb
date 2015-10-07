@@ -1,0 +1,137 @@
+<ul id="collection_controller_actions" class="nav nav-tabs">
+	<li class="active"><%= link_to('<i class="icon-th-list"></i>列表'.html_safe, admin_knowledge_trees_path) %></li>
+	<% if can? :create, KnowledgeTree %>
+	<li><a href="javascript:void(0);" onclick="new_admin_knowledge_tree_ajax(0);"><i class="icon-plus"></i>新增</a></li>
+	<% end %>
+</ul>
+<div class="zTreeDemoBackground left">
+	<ul id="knowledge_tree_ztree" class="ztree"></ul>
+</div>
+<div id="knowledgeTreeModal" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>知识点树</h3>
+  </div>
+  <div id="knowledgeTreeModalBody" class="modal-body">
+    <p>加载...</p>
+  </div>
+  <div class="modal-footer">
+      <a href="javascript:void(0);" onclick="$('#knowledgeTreeModal').modal('hide');" class="btn">关闭</a>
+      <a href="javascript:void(0);" onclick="knowledge_tree_form_submit();" class="btn btn-primary">保存</a>
+    </div>
+</div>
+<%= content_for :stylesheets do -%>
+<link rel="stylesheet" href="/module/ztree/css/zTreeStyle.css" type="text/css" charset="utf-8">
+<style type="text/css">
+.ztree li span.button.add{margin:0; background: url(/module/ztree/css/img/diy/add.png) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle}
+</style>
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.exedit-3.5.js"></script>
+<%= javascript_include_tag "admin/knowledge_trees" %>
+<script type="text/javascript">
+<!--
+var IDMark_Switch = "_switch",
+		IDMark_Icon = "_ico",
+		IDMark_Span = "_span",
+		IDMark_Input = "_input",
+		IDMark_Check = "_check",
+		IDMark_Edit = "_edit",
+		IDMark_Remove = "_remove",
+		IDMark_Ul = "_ul",
+		IDMark_A = "_a";
+var setting = {
+	view: {
+		addHoverDom: addHoverDom,
+		removeHoverDom: removeHoverDom,
+		addDiyDom: addDiyDom
+	},
+	data: {
+		simpleData: {
+			enable: true
+		}
+	}
+};
+function addHoverDom(treeId, treeNode) {
+			
+	var aObj = $("#" + treeNode.tId + IDMark_A);
+	
+	<% if can? :create, KnowledgeTree %>
+	if ($("#diyBtn_new_"+treeNode.id).length>0) return;
+	if (treeNode.node_type == 0) {
+		var newStr = "<span id='diyBtn_new_space_" +treeNode.id+ "' >&nbsp;</span><span class='button add' id='diyBtn_new_" +treeNode.id+ "' title='"+treeNode.name+"' onfocus='this.blur();'></span>";
+		aObj.append(newStr);
+		var btn = $("#diyBtn_new_"+treeNode.id);
+		if (btn) btn.bind("click", function(){
+			new_admin_knowledge_tree_ajax(treeNode.id);
+		});
+	}
+	<% end %>
+	<% if can? :update, KnowledgeTree %>
+	if ($("#diyBtn_edit_"+treeNode.id).length>0) return;
+		var editStr = "<span id='diyBtn_edit_space_" +treeNode.id+ "' >&nbsp;</span><span class='button edit' id='diyBtn_edit_" +treeNode.id+ "' title='"+treeNode.name+"' onfocus='this.blur();'></span>";
+		aObj.append(editStr);
+		var btn = $("#diyBtn_edit_"+treeNode.id);
+		if (btn) btn.bind("click", function(){
+			$.get('/admin/knowledge_trees/'+treeNode.id+'/edit',{'time' : new Date().getTime()},function(data) {
+				$('#knowledgeTreeModalBody').html(data);
+				$('#knowledgeTreeModal').modal('show');
+			});
+			
+		});
+	<% end %>
+	<% if can? :destroy, KnowledgeTree %>
+	if ($("#diyBtn_destroy_"+treeNode.id).length>0) return;
+	if (treeNode.isParent) return;
+		var editStr = "<span id='diyBtn_destroy_space_" +treeNode.id+ "' >&nbsp;</span><span class='button remove' id='diyBtn_destroy_" +treeNode.id+ "' title='"+treeNode.name+"' onfocus='this.blur();'></span>";
+		aObj.append(editStr);
+		var btn = $("#diyBtn_destroy_"+treeNode.id);
+		if (btn) btn.bind("click", function(){
+			if(confirm('确认删除产品树：'+treeNode.name+'？')) {
+				$.post('/admin/knowledge_trees/destroy/'+treeNode.id+'.json', {}, function(data) {
+					var zTree = $.fn.zTree.getZTreeObj("knowledge_tree_ztree");
+					var selectedNode = zTree.getSelectedNodes()[0];
+					zTree.removeNode(selectedNode);
+				});
+			}
+		});
+	<% end %>
+
+}
+
+function removeHoverDom(treeId, treeNode) {
+	$("#diyBtn_new_"+treeNode.id).unbind().remove();
+	$("#diyBtn_new_space_" +treeNode.id).unbind().remove();
+	
+	$("#diyBtn_edit_"+treeNode.id).unbind().remove();
+	$("#diyBtn_edit_space_" +treeNode.id).unbind().remove();
+
+	$("#diyBtn_destroy_"+treeNode.id).unbind().remove();
+	$("#diyBtn_destroy_space_" +treeNode.id).unbind().remove();
+			
+}
+
+function addDiyDom(treeId, treeNode) {
+	if (treeNode.parentNode && treeNode.parentNode.id!=2) return;
+			
+}
+
+function new_admin_knowledge_tree_ajax(pId) {
+	$.get('<%= new_admin_knowledge_tree_path %>',{'time' : new Date().getTime(), 'pId' : pId},function(data) {
+		$('#knowledgeTreeModalBody').html(data);
+		$('#knowledgeTreeModal').modal('show');
+	});
+}
+
+$(document).ready(function(){
+	$.get('<%= admin_knowledge_trees_path %>.json',{},function(data) {
+		$.fn.zTree.init($("#knowledge_tree_ztree"), setting, data);
+	});
+});
+//-->
+</script>	
+<% end -%>
+

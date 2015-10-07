@@ -1,0 +1,275 @@
+<%= simple_form_for @product_tree_group, :url => (@product_tree_group.id.present? ? admin_product_tree_group_path(@product_tree_group) : admin_product_tree_groups_path), :html => { :class => 'form-horizontal', :id => "product_tree_group_form", :onsubmit => "valid_product_tree_group_form();" } do |f| %>
+<%= f.hidden_field :product_tree_data %>
+<%= f.hidden_field :node_knowledge_tree_data %>
+<div class="control-group">
+    <label class="control-label" for="inputEmail">名称：</label>
+    <div class="controls">
+      <%= f.text_field :name %>
+    </div>
+  </div>
+  <div class="control-group">
+      <label class="control-label" for="inputEmail">课程包：</label>
+      <div class="controls">
+		<div class="row-fluid">
+			<div class="span6">
+				<strong>课程树</strong>
+				<ul id="product_tree_ztree" class="ztree"></ul>
+			</div>
+			<div class="span6">
+				<strong>知识点树</strong>
+				<ul id="knowledge_tree_ztree" class="ztree"></ul>
+			</div>
+		</div>
+  </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+		<%= link_to '取消', admin_product_tree_groups_path, :class => 'btn' %>
+		<%= f.button :submit, :class => 'btn-primary' %>
+  </div>
+</div>
+<% end %>		
+
+<%= content_for :stylesheets do -%>
+<link rel="stylesheet" href="/module/ztree/css/zTreeStyle.css" type="text/css" charset="utf-8">	
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8" src="/module/my97/WdatePicker.js"></script>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+Array.prototype.unique1 = function(){
+ var res = [];
+ var json = {};
+ for(var i = 0; i < this.length; i++){
+  if(!json[this[i]]){
+   res.push(this[i]);
+   json[this[i]] = 1;
+  }
+ }
+ return res;
+}
+
+var product_tree_json_data = JSON.parse('<%= @product_tree_group.product_tree_data.nil? ? "[]" : @product_tree_group.product_tree_data.html_safe %>');
+
+var node_knowledge_tree_data = JSON.parse('<%= @product_tree_group.node_knowledge_tree_data.nil? ? "{}" : @product_tree_group.node_knowledge_tree_data.html_safe %>');
+
+
+
+
+// ztree start
+var product_tree_setting = {
+	check: {
+		enable: true,
+		chkboxType: { "Y" : "s", "N" : "" }
+	},
+	data: {
+		simpleData: {
+			enable: true
+		}
+	},
+	callback: {
+		beforeClick: product_tree_before_lick,
+		onCheck: product_tree_check
+	}
+};
+var knowledge_tree_setting = {
+	check: {
+		enable: true,
+		chkboxType: { "Y" : "s", "N" : "s" }
+	},
+	data: {
+		simpleData: {
+			enable: true
+		}
+	},
+	callback: {
+		onCheck: knowledge_tree_check
+	}
+};
+function setCheck() {
+	var zTree = $.fn.zTree.getZTreeObj("product_tree_ztree"),
+	py = $("#py").attr("checked")? "p":"",
+	sy = $("#sy").attr("checked")? "s":"",
+	pn = $("#pn").attr("checked")? "p":"",
+	sn = $("#sn").attr("checked")? "s":"",
+	type = { "Y":py + sy, "N":pn + sn};
+	zTree.setting.check.chkboxType = type;
+}
+
+
+
+function product_tree_before_lick(treeId, treeNode) {
+	var zTree = $.fn.zTree.getZTreeObj("product_tree_ztree");
+	
+	if (treeNode.isParent) {
+		$('#knowledge_tree_ztree').html('');
+		return true;
+	} else {
+		//zTree.checkNode(treeNode);
+		if(treeNode.checked) {
+			$.get('<%= admin_knowledge_trees_path %>.json',{},function(data) {	
+				$.fn.zTree.init($("#knowledge_tree_ztree"), knowledge_tree_setting, data);
+				var knowledge_tree_ids = node_knowledge_tree_data[treeNode.id];
+				var knowledge_tree_ztree = $.fn.zTree.getZTreeObj("knowledge_tree_ztree");
+				
+				if(!!knowledge_tree_ids && knowledge_tree_ids.length > 0) {
+					for(var i=0,len=knowledge_tree_ids.length;i<len;i++) {
+						var knowledgeTreeNode = knowledge_tree_ztree.getNodeByParam("id", knowledge_tree_ids[i]);
+						if(!!knowledgeTreeNode) {
+							knowledge_tree_ztree.checkNode(knowledgeTreeNode);
+						}
+					}
+					
+				}
+				
+				//setCheck();
+				//$("#py").bind("change", setCheck);
+				//$("#sy").bind("change", setCheck);
+				//$("#pn").bind("change", setCheck);
+				//$("#sn").bind("change", setCheck);
+			});
+		} else {
+			$('#knowledge_tree_ztree').html('');
+		}
+		
+		return true;
+	}
+}
+
+function product_tree_check(e, treeId, treeNode) {
+	if(treeNode.checked) {
+		if(treeNode.node_type == 1) {
+			node_knowledge_tree_data[treeNode.id] = [];
+			$.get('<%= admin_knowledge_trees_path %>.json',{},function(data) {
+				$.fn.zTree.init($("#knowledge_tree_ztree"), knowledge_tree_setting, data);
+				var zTree = $.fn.zTree.getZTreeObj("product_tree_ztree");
+				zTree.selectNode(treeNode);
+			
+				var knowledge_tree_ids = node_knowledge_tree_data[treeNode.id];
+				var knowledge_tree_ztree = $.fn.zTree.getZTreeObj("knowledge_tree_ztree");
+				if(!!knowledge_tree_ids && knowledge_tree_ids.length > 0) {
+					for(var i=0,len=knowledge_tree_ids.length;i<len;i++) {
+						var knowledgeTreeNode = knowledge_tree_ztree.getNodesByParam("id", knowledge_tree_ids[i]);
+						if(!!knowledgeTreeNode) {
+							knowledge_tree_ztree.checkNode(knowledgeTreeNode);
+						}
+					}
+				}
+			});
+		} else {
+			deep_product_tree_data(treeNode, false);
+		}
+	} else {
+		if(treeNode.node_type == 1) {
+			delete node_knowledge_tree_data[treeNode.id];
+		}
+		//if(treeNode.node_type == 1) {
+		//	delete product_tree_json_data[treeNode.id];
+		//} else {
+		//	deep_product_tree_data(treeNode, true);
+		//}
+		
+		$('#knowledge_tree_ztree').html('');
+	}
+}
+
+function deep_product_tree_data(treeNode, isDelete) {
+	
+	var childrenNodes = treeNode.children
+	for(var i=0,len=childrenNodes.length;i<len;i++) {
+		childrenNode = childrenNodes[i];
+		var childrenNodeType = childrenNode.node_type
+		if(isDelete) {
+			if(childrenNodeType == 1) {
+				delete node_knowledge_tree_data[childrenNode.id];
+			}
+		} else {
+			if(!node_knowledge_tree_data[childrenNode.id] && childrenNodeType == 1) {
+				node_knowledge_tree_data[childrenNode.id] = [];
+			}
+		}
+		if(childrenNode.node_type == 0) {
+			deep_product_tree_data(childrenNode, isDelete);
+		}
+	}
+}
+
+function knowledge_tree_check(e, treeId, treeNode) {
+	var product_tree_zTree = $.fn.zTree.getZTreeObj("product_tree_ztree");
+	if(product_tree_zTree.getSelectedNodes().length > 0) {
+		var product_tree_selected_id = product_tree_zTree.getSelectedNodes()[0].id;
+		var knowledge_tree_ids = node_knowledge_tree_data[product_tree_selected_id];
+		if(treeNode.checked) {
+			deep_knowledge_tree_data(knowledge_tree_ids, treeNode, false);	
+		} else {
+			deep_knowledge_tree_data(knowledge_tree_ids, treeNode, true);	
+		}
+	}
+}
+
+function deep_knowledge_tree_data(knowledge_tree_ids, treeNode, isDelete) {
+		
+		if(isDelete) {
+			knowledge_tree_ids.remove(treeNode.id);
+		} else {
+			if(knowledge_tree_ids.indexOf(treeNode.id) == -1) {
+				knowledge_tree_ids.push(treeNode.id);
+			}
+		}
+		
+		if(treeNode.node_type == 0) {
+			var childrenNodes = treeNode.children
+			
+			for(var i=0,len=childrenNodes.length;i<len;i++) {
+				childrenNode = childrenNodes[i];
+				deep_knowledge_tree_data(knowledge_tree_ids, childrenNode, isDelete)
+			}
+		}
+}
+// ztree end
+
+function valid_product_tree_group_form() {
+	product_tree_json_data = [];
+	var product_tree_zTree = $.fn.zTree.getZTreeObj("product_tree_ztree");
+	var nodes = product_tree_zTree.getCheckedNodes();
+	for(var i=0,len=nodes.length;i<len;i++) {
+		var node = nodes[i];
+		if(node.node_type == 0) {
+			product_tree_json_data.push({"id" : node.id,"name" : node.name, "pId" : node.pId, "node_type" : node.node_type, icon:"/module/ztree/css/img/diy/1_open.png"});
+		} else {
+			product_tree_json_data.push({"id" : node.id,"name" : node.name, "pId" : node.pId, "node_type" : node.node_type, icon:"/module/ztree/css/img/diy/3.png"});
+		}
+			
+	}
+	$('#product_tree_group_product_tree_data').val(JSON.stringify(product_tree_json_data));
+	$('#product_tree_group_node_knowledge_tree_data').val(JSON.stringify(node_knowledge_tree_data));
+	
+	return false;
+}
+
+$(function() {
+	
+	$.get('<%= admin_product_trees_path %>.json',{},function(data) {
+		$.fn.zTree.init($("#product_tree_ztree"), product_tree_setting, data);
+		
+		var product_tree_zTree = $.fn.zTree.getZTreeObj("product_tree_ztree");
+		for(var i=0,len=product_tree_json_data.length;i<len;i++) {
+			var product_tree_id = product_tree_json_data[i].id;
+			var productTreeNode = product_tree_zTree.getNodeByParam("id", product_tree_id);
+			if(!!productTreeNode) {
+				product_tree_zTree.checkNode(productTreeNode);
+			}
+			
+		}
+		//setCheck();
+		//$("#py").bind("change", setCheck);
+		//$("#sy").bind("change", setCheck);
+		//$("#pn").bind("change", setCheck);
+		//$("#sn").bind("change", setCheck);
+	});
+});
+</script>
+<% end -%> 

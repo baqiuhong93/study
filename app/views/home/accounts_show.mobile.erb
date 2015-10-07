@@ -1,0 +1,160 @@
+
+    <div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            我的课程
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> <a href="<%=accounts_index_path %>">我的课程</a>>课程内容
+    </h3>
+    <% if !@user_account.product.nil? %>
+            <% @user_account.product.tree_group_data_array.each do |k| %>
+                <% _product_tree_group = ProductTreeGroup.find_from_cache(k['id']) %>
+                <% if !_product_tree_group.nil? %>
+                    <% _product_tree_data_array = _product_tree_group.product_tree_data_array.collect { |x| x["id"] } %>
+                    <% 
+                    _product_tree_group.product_tree_data_array.each do |ptd|
+                        if !_product_tree_data_array.include?(ptd['pId'])
+                            _product_tree = ProductTree.find_from_cache(ptd["id"])
+                            if !_product_tree.nil?
+                    %>
+    <h2 class="my_classh2">
+        <span style="width: 90%;"><%= ptd['name'] %>&nbsp;&nbsp;&nbsp;&nbsp;课时:<%= _product_tree_group.knowledges_course_sum(ptd['id']) %> 
+            <% if _product_tree.record %>
+                &nbsp;&nbsp;&nbsp;&nbsp;制作中
+            <% end %></span>
+        <div class="clear">
+        </div>
+    </h2>
+    <div class="classlist4">
+        <ul class="classlist4_ul1">
+            <% 
+            _product_tree_group.product_tree_data_array.each do |s_ptd|
+                if s_ptd["pId"] == ptd["id"]
+                    _product_tree = ProductTree.find_from_cache(s_ptd["id"])
+                    if !_product_tree.nil?
+            %>
+            <li class="classlist4_li1" id="product_tree_<%= s_ptd['id'] %>">
+                <p class="classlist4_p1">
+                    <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/classitem1.png" />
+                    <%= s_ptd["name"] %></p>
+                <ul class="classlist4_ul2">
+                    <%
+                                knows =  _product_tree_group.node_knowledge_tree_data_hash[s_ptd['id'].to_s]
+                                knows.each do |know|
+                                    _know = KnowledgeTree.find_from_cache(know)
+                                    if !_know.nil?
+                                        if !knows.include?(_know.pId)
+                            %>
+                    <li class="classlist4_li2">
+                        <p class="classlist4_p2"><%= _know.name %></p>
+                        <ul class="classlist4_ul3">
+                            <% 
+                                 knows.each do |know1|
+                                     _know1 = KnowledgeTree.find_from_cache(know1)
+                                     if !_know1.nil?
+                                        if _know1.pId == _know.id
+                                %>
+                            <li><span><%= _know1.name %></span> <a href="<%= knowledge_listen_path(:account_id => @user_account.id, :pt_id => s_ptd['id'], :tgd_id => k['id'], :kt_id => _know1.id) %>">立即学习</a> </li>
+                            <% 
+                                        end
+                                    end
+                                 end 
+                                 %>
+                        </ul>
+                    </li>
+                    <%
+                                        end
+                                    end
+                                end
+                            %>
+                </ul>
+            </li>
+            <% 
+                                    end
+                                end
+                            end 
+                            %>
+        </ul>
+        <div class="clear">
+        </div>
+    </div>
+    <% end %>
+                        <% end %>
+                    <% end %>
+                <% end %>
+            <% end %>
+        <% end %>
+    <h3 class="hp_grh3">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <%=cms_part_page("589") %>
+
+<%= content_for :javascripts do -%>
+<script language="javascript">
+$(function() {
+    $(".classlist4_p1").click(function () {
+                var ch2 = $(this).next(".classlist4_ul2");
+                var pa1 = $(this).parent("li");
+                ch2.slideToggle("fast", function () {
+                    if (ch2.is(":visible")) {
+                        pa1.addClass("cur1");
+                    }
+                    else {
+                        pa1.removeClass("cur1");
+                    }
+                });
+            });
+            $(".classlist4_p2").click(function () {
+                var ch3 = $(this).next(".classlist4_ul3");
+                var self = $(this);
+                ch3.slideToggle("fast", function () {
+                    if (ch3.is(":visible")) {
+                        self.addClass("cur2");
+                    }
+                    else {
+                        self.removeClass("cur2");
+
+                    }
+                });
+            });
+            $("#stafooter_toolsa").click(function () {
+                $(".jumpdiv").slideToggle("fast", function () {
+                    if ($(".jumpdiv").is(":visible")) {
+                        $("#stafooter_toolsa").html("收起");
+                    }
+                    else {
+                        $("#stafooter_toolsa").html("更多");
+
+                    }
+                });
+
+
+            });
+
+    
+   <% 
+   learnSchedule = LearnSchedule.where(:user_id => @current_user.uid, :account_id => @user_account.id).first
+   if !learnSchedule.nil?
+   %>
+   if ($("#knowledge_id_<%= learnSchedule.knowledge_id %>").length > 0) {
+        $("#knowledge_id_<%= learnSchedule.knowledge_id %>").prepend('<img class="stu_squer" src="<%= GlobalSettings.image_domain %>images/stu_img1.jpg" width="22" height="18" /><span class="stu_5s">上次听到<%= learnSchedule.knowledge_schedule[learnSchedule.knowledge_id] %><img src="<%= GlobalSettings.image_domain %>images/stu_sq2.jpg" width="7" height="11" /></span>');
+        var _p = $("#knowledge_id__"+$("#knowledge_id_<%= learnSchedule.knowledge_id %>").attr("p_id"));
+        _p.click();
+        $("#product_tree_" + _p.attr("p_id")).click();
+   }
+   <% end %>
+   
+});
+ 
+</script>   
+<% end -%>

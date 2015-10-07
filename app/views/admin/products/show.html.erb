@@ -1,0 +1,70 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>名称:</strong></strong></td><td><%= @product.name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>编码:</strong></td><td><%= @product.code %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>标签:</strong></td><td><%= @product.tag_list %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>原价:</strong></td><td><%= @product.origin_price %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>售价:</strong></td><td><%= @product.sale_price %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>有效类型:</strong></td><td><%= Product.product_type_hash[@product.effect_type] %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>有效值:</strong></td><td><%= @product.effect_str %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>点击数:</strong></td><td><%= @product.view_num %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>上线时间:</strong></td><td><%= format_date(@product.onlined_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>过期时间:</strong></td><td><%= format_date(@product.expired_at, "无期限") %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>创建时间:</strong></td><td><%= format_date(@product.created_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>更新时间:</strong></td><td><%= format_date(@product.updated_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>课程特色:</strong></td><td><%= @product.keywords %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>课程说明:</strong></td><td><%= @product.description %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>课程包:</strong></td>
+		<td>
+			<% @product.tree_group_data_array.each do |p| %>
+			<%= link_to p["text"], admin_product_tree_group_path(:id => p["id"]) %> 
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>老师:</strong></td>
+		<td>
+			<% @product.speaker_teachers.each do |p| %>
+			<%= link_to p.teacher_name, admin_teacher_path(:id => p.teacher_id) %> 
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>作业:</strong></td>
+		<td>
+			<% @product.product_classworks.each do |p| %>
+			<%= link_to p.classwork_name, admin_classwork_path(:id => p.classwork_id) %> 
+			<% end %>
+		</td>
+	</tr>
+</table>
+  

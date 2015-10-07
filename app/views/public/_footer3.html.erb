@@ -1,0 +1,13 @@
+<%= cms_part_page("591") %>
+<script type="text/javascript" charset="utf-8">
+var _knowledge_listen_data = getCookie("_knowledge_video_log");
+if(!!_knowledge_listen_data) {
+	deleteCookie("_knowledge_video_log");
+	var _knowledge_listen_datas = _knowledge_listen_data.split("_");
+	var account_id = _knowledge_listen_datas[0];
+	var knowledge_id = _knowledge_listen_datas[1];
+	var second = _knowledge_listen_datas[2];
+	$.post("<%= learn_schedule_update_path %>", {"account_id" : account_id, "knowledge_id" : knowledge_id, "second" : second}, function(data) {});
+}
+
+</script>

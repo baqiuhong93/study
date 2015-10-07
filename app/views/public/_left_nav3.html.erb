@@ -1,0 +1,10 @@
+<div class="mzh_l">
+ <div class="mzh_1t">我的账户</div>
+ <div class="mzh_menu">
+  <ul>
+   <li><a class="<%= request.fullpath.start_with?('/money_records') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_money_records_path %>">账户信息</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/recharges') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_recharges_index_path %>">网银充值</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/card_nos') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= new_card_no_path %>">注册学习卡</a></li>
+  </ul>
+ </div>
+</div>

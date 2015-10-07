@@ -1,0 +1,72 @@
+<%= render :partial => '/admin/public/index_actions' %>
+<%= form_for @search, :url => admin_teachers_path, :html => {:method => :get, :class => "form-horizontal"} do |f| %>
+<div class="row-fluid">
+<div class="span6 bgcolor">
+  <div class="control-group">
+    <%= f.label :name_contains, "姓名：", :class => "control-label" %>
+    <div class="controls">
+      <%= f.text_field :name_contains %>
+    </div>
+  </div>
+</div>
+<div class="span6 bgcolor">
+  <div class="control-group">
+      
+  </div>
+</div>
+</div>
+
+<div class="row-fluid">
+  <div class="span12 bgcolor text-center">
+    <div class="control-group">
+      <div class="controls">
+        <%= f.submit "查询", :disable_with => '查询ing...', :class => "btn" %>
+      </div>
+    </div>             
+  </div>
+</div>
+<% end %>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+        <th>ID</th>
+            <th>姓名</th>
+            <th>简介</th>
+			<th>科目</th>
+			<th>推荐</th>
+			<th>无效</th>
+            <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @teachers.each do |teacher| %>
+      <tr>
+      <td><%= teacher.id %></td>
+		  <td><%= teacher.name %></td>
+		  <td><%= teacher.description_more %></td>
+		  <td>
+		  	<% _subject_first = eval(teacher.subject_first.gsub("\"","")) %>
+			<% Teacher.subject_first_array.each do |l| %>
+				<% if _subject_first.include?(l[:id]) %>
+				<%= l[:text] %> 
+				<% end %>
+			<% end %>
+		  </td>
+		  <td><%= teacher.recommend_text %></td>
+		  <td><%= teacher.deleted_text %></td>
+		  <td>
+		<% if can? :read, Teacher %>
+		  <%= link_to '详', admin_teacher_path(teacher) %>
+		<% end %>
+		<% if can? :update, Teacher %>
+          <%= link_to '改', edit_admin_teacher_path(teacher) %>
+		<% end %>
+		<% if can? :destroy, Teacher %>
+          <%= link_to '删', admin_teacher_path(teacher), :method => :delete, :data => { :confirm => '确认删除?' } %>
+		<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @teachers, :renderer => BootstrapPagination::Rails %>

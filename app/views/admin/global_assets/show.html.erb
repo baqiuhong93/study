@@ -1,0 +1,39 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>名称:</strong></td>
+		<td><%= @global_asset.data_file_name %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>类型:</strong></td>
+		<td><%= @global_asset.data_content_type %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>大小:</strong></td>
+		<td><%= @global_asset.data_file_size %></td>
+	</tr>
+	<tr>
+	<td width="15%" style="text-align:right;"><strong>地址:</strong></td>
+	<td><%= @global_asset.data_file_url %></td>
+</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>宽度:</strong></td>
+		<td><%= @global_asset.width %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>高度:</strong></td>
+		<td><%= @global_asset.height %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>用户名:</strong></td>
+		<td><%= @global_asset.user_name %></td>
+	</tr>
+	<tr>
+	<td width="15%" style="text-align:right;"><strong>创建时间:</strong></td>
+	<td><%= format_date(@global_asset.created_at) %></td>
+</tr>
+	<tr>
+	<td width="15%" style="text-align:right;"><strong>修改时间:</strong></td>
+	<td><%= format_date(@global_asset.updated_at) %></td>
+</tr>
+	</table>

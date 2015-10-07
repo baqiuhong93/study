@@ -1,0 +1,115 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            我的课程
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> 课程列表
+    </h3>
+    <h2 class="my_classh2">
+        <span>我的课堂</span> <a href="http://product.xredu.com/">选课></a>
+        <div class="clear">
+        </div>
+    </h2>
+    <div class="my_class_card_tt">
+        <span>课程列表</span>
+    </div>
+    <div class="my_class_card_con">
+        <ul>
+            <% if @user_accounts.empty? %>
+               <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td>你还没有课程哟！赶快选课吧！</td>
+                        <td><a href="http://product.xredu.com">选课>></a></td>
+                    </tr>
+                </table>
+                </li>
+               <% end %>
+               <% @user_accounts.each do |user_account| %>
+               <% learn_schedule = LearnSchedule.where(:account_id => user_account.id).first %>
+            <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="tttd">
+                            课程名称：
+                        </td>
+                        <td class="tttd2" colspan="2">
+                            <%= user_account.product_name %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="ttr" id="msg_a_<%= user_account.id %>_label">
+                            已学习：
+                        </td>
+                        <td>
+                            <span id="msg_a_<%= user_account.id %>"></span>天
+                        </td>
+						<% if user_account.effective? %>
+                        <td rowspan="2">
+                            <a href="<%=accounts_assets_path(:account_id => user_account.id) %>">讲义下载</a>
+                        </td>
+                        <td rowspan="2">
+                           <a href="<%= accounts_show_path(:id => user_account.id) %>" class="gary">立即学习</a> 
+                           <% end %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="ttr">
+                            剩余：
+                        </td>
+                        <td>
+                            <b id="msg_b_<%= user_account.id %>"></b>天
+                        </td>
+                    </tr>
+                </table>
+            </li>
+           <% end %>
+        </ul>
+        <div class="clear">
+        </div>
+    </div>
+    <%= will_paginate @user_accounts, :class => "news_page", :renderer => BootstrapPagination::Rails %>
+    <h3 class="hp_grh3">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <%=cms_part_page("589") %>
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function effect_msg(account_id,effect_type, effect_str, created_at) {
+        var _now = new Date();
+        _now.setTime(<%= Time.now.to_i * 1000 %>);
+        var _ta = split_date(created_at);
+        var _created_at = new Date(_ta[0], _ta[1]-1, _ta[2], _ta[3], _ta[4], _ta[5]);
+        _ta = split_date(effect_str);
+        var _effect_at = new Date(_ta[0], _ta[1]-1, _ta[2], _ta[3], _ta[4], _ta[5]);
+        if (_now.getTime() >= _effect_at.getTime()) {
+            $("#msg_a_"+account_id+"_label").text("课程已过期 ");
+            $("#msg_b_"+account_id).text("0");
+        } else {
+            $("#msg_a_"+account_id).text((((_now.getTime()-_created_at.getTime()).toFixed(2)/86400000)).toFixed(0));
+            $("#msg_b_"+account_id).text((((_effect_at.getTime()-_now.getTime()).toFixed(2)/86400000)).toFixed(0));
+        }
+        
+}
+function split_date(d) {
+    var _d = d.split(" ")[0];
+    var _t = d.split(" ")[1];
+    var _da = _d.split("-");
+    var _ta = _t.split(":");
+    return [_da[0],_da[1],_da[2],_ta[0],_ta[1],_ta[2]];
+}
+<% @user_accounts.each do |user_account| %>
+effect_msg(<%= user_account.id %>, '<%= user_account.effect_type %>', '<%= user_account.effect_str %>', '<%= format_date(user_account.created_at) %>');
+<% end %>
+</script>   
+<% end -%>

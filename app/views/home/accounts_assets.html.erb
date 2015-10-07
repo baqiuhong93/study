@@ -1,0 +1,47 @@
+<% @_page_title =   "我的课堂讲义" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="main mt10">
+<%= render "public/left_nav2" %>
+<div class="mzh_r">
+ <div class="mzhr_pos">
+ <span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> <a href="<%= accounts_index_path %>">我的课程</a> >> 讲义下载</span>
+ </div>
+ <div class="mzhr_con mt10">
+ 
+ <div class="mdy_list">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+   <tr class="mdy_th">
+     <td width="30%" align="left">课程名称</td>
+     <td width="30%" align="center">讲义名称</td>
+     <td width="30%" align="center">上传时间</td>
+     <td width="10%" align="center">操作</td>
+   </tr>
+   <%
+   @assets.each do |asset| 
+   %>
+   <tr>
+     <td align="left"><%= ProductTree.find_from_cache(asset.assetable_id).name %></td>
+     <td align="center"><%= asset.data_file_name %></td>
+     <td align="center"><%= format_date(asset.created_at) %></td>
+     <td align="center"><a href="<%= accounts_assets_down_path(:account_id => params[:account_id], :asset_id => asset.id) %>">下载</a></td>
+   </tr>
+   <%
+   end unless @assets.nil?
+   %>
+  <% if @assets.nil? || @assets.empty? %>
+  <tr><td align="center">暂无记录</td></tr>
+  <% end %>
+ </table>
+  </div>
+ <% if !@assets.nil? %>
+ <%= will_paginate @assets, :class => "mpage", :renderer => BootstrapPagination::Rails %>
+ <% end %>
+ </div>
+</div>
+<div class="clear"></div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->

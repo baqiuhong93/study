@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>产品列表页面</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"
+        name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta content="email=no" name="format-detection" />
+    <link rel="Stylesheet" type="text/css" href="<%= GlobalSettings.css_domain %>mobTheme/StyleSheet.css" />
+    <link rel="stylesheet" href="<%= GlobalSettings.css_domain %>mobTheme/idangerous.swiper.css" />
+    <link rel="stylesheet" href="<%= GlobalSettings.css_domain %>mobTheme/style.css?v=1.8" />
+     <script type="text/javascript" src="<%= GlobalSettings.js_domain %>js/jquery-1.7.1.min.js"></script>
+     <script type="text/javascript">
+         $(document).ready(function () {
+		 	var imgheight = $(".imgheight").height();
+			$(".swiper-main").css("height", imgheight);
+             $("#stafooter_toolsa").click(function () {
+                 $(".jumpdiv").slideToggle("fast", function () {
+                     if ($(".jumpdiv").is(":visible")) {
+                         $("#stafooter_toolsa").html("收起");
+                     }
+                     else {
+                         $("#stafooter_toolsa").html("更多");
+
+                     }
+                 });
+
+
+             });
+         });
+      
+    </script>
+
+</head>
+<body>
+    <div class="newstop">
+        <a href="http://m.xredu.com/"></a>
+        <p class="sm2">
+            欣瑞课程商城
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线:400-620-2002(点击拨打)</a>
+    </h3>
+
+	
+
+    <h3 class="hp_grh3">
+        课程图书搜索
+    </h3>
+      
+    <div class="pro_list2">
+        <%= form_for @search, :url => products_path, :html => {:method => :get} do |f| %>
+    <p class="hp_input_p">
+        <span class="s1">考试分类：</span>
+        <%= f.select :exam_type_id_eq, Product.exam_type_id_hash.map {|k,v| [v,k]}, {:include_blank => "请选择考试分类"}, {:class => "s1", :onchange => "this.form.submit()"} %>
+        <br />
+    </p>
+     <p class="hp_input_p">
+        <span class="s1">考试级别：</span>
+        <%= f.select :exam_level_id_contains, Product.exam_level_id_hash.map {|k,v| [v,','+k.to_s+',']}, {:include_blank => "请选择考试级别"}, {:class => "s1", :onchange => "this.form.submit()"} %>
+        <br />
+    </p>
+     <p class="hp_input_p">
+        <span class="s1">产品类型：</span>
+       <%= f.select :type_id_eq, Product.type_id_hash.map {|k,v| [v,k]}, {:include_blank => "请选择产品类型"}, {:class => "s1", :onchange => "this.form.submit()"} %>
+        <br />
+    </p>
+     <p class="hp_input_p">
+        <span class="s1">授课形式：</span>
+        <%= f.select :skxx_id_eq, Product.skxx_id_hash.map {|k,v| [v,k]}, {:include_blank => "请选择授课形式"}, {:class => "s1", :onchange => "this.form.submit()"} %>
+        <br />
+    </p>
+    <% end %>
+        <ul>
+            <% if @products.empty? %>
+            <li>
+                <p>暂无记录</p>
+            </li>
+            <% end %>
+            <% @products.each do |product| %>
+            <li>
+                <h2>
+                    产品名称：<%=product.name %>
+                </h2>
+                <div class="pro_list2_left">
+                    <p>
+                        产品价格：<span>￥<%= format_money(product.sale_price) %></span>元
+                    </p>
+                    <p>
+                        说明：<%=product.description %>
+                    </p>
+                    <p>
+                        <% if product.effect_type == 1 %>
+                        有效期：<%= product.effect_str %>
+                            <% elsif product.effect_type == 2 %>
+                        有效天数：<%= product.effect_str %>
+                        <% end %>
+                    </p>
+                </div>
+                <a id="xredu" class="pro_list2_righta" href="<%=product_path(:id => product.code)%>">详情</a>
+                <p class="pro_list2_botp">
+                </p>
+            </li>
+            <% end %>
+        </ul>
+    </div>
+    <%= will_paginate @products, :class => "news_page", :renderer => BootstrapPagination::Rails %>
+    <h3 class="hp_grh3">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <%=cms_part_page("589") %>
+</body>
+</html>

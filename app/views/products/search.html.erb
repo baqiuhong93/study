@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>欣瑞教育官网课程图书商城</title>
+    <link rel="Stylesheet" href="<%= GlobalSettings.css_domain %>PCTheme/StyleSheet.css" />
+    <link href="<%= GlobalSettings.css_domain %>PCTheme/zzsc.css" rel="stylesheet" />
+    <script type="text/javascript" src="<%= GlobalSettings.css_domain %>js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="<%= GlobalSettings.css_domain %>js/jquery.SuperSlide.js"></script>
+    <script type="text/javascript" src="<%= GlobalSettings.css_domain %>js/tabbedContent.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://asset.xredu.com/css/2014310style.css"></link>
+	<script src="http://asset.xredu.com/2014310js/sy_st.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://asset.xredu.com/2014310js/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+<%= cms_part_page("142") %>
+
+    <div class="topBanner">
+        <a href="http://product.xredu.com" class="logoa"></a><a href="http://www.xredu.com/zhuanti/app/index.html" target="_blank" class="bannera">
+            <img src="<%= GlobalSettings.css_domain %>PCTheme/images/adbanner1.gif" />
+        </a>
+        <img class="rcimg" src="<%= GlobalSettings.css_domain %>PCTheme/images/qrcode.gif" />
+        <div class="clear">
+        </div>
+    </div>
+    <div class="topmenu">
+        <div class="topmenu_con">
+            <span class="cnamesp">全部商品分类</span>
+            <ul>
+                <li><a href="http://product.xredu.com" class="cur">首页</a> </li>
+                <li><a href="http://product.xredu.com/products/search?utf8=%E2%9C%93&search%5Bexam_type_id_eq%5D=&search%5Btype_id_eq%5D=&search%5Bexam_level_id_contains%5D=&search%5Bskxx_id_eq%5D=1&order_type=">面授课程</a> </li>
+                <li><a href="http://product.xredu.com/products/search?utf8=%E2%9C%93&search%5Bexam_type_id_eq%5D=&search%5Btype_id_eq%5D=&search%5Bexam_level_id_contains%5D=&search%5Bskxx_id_eq%5D=2&order_type=">网校课程</a> </li>
+                <li><a href="http://product.xredu.com/products/search?utf8=%E2%9C%93&search%5Bexam_type_id_eq%5D=&search%5Btype_id_eq%5D=&search%5Bexam_level_id_contains%5D=&search%5Bskxx_id_eq%5D=3&order_type=">图书教材</a> </li>
+                <li><a href="http://www.xredu.com/book/list_2168_1.html" target="_blank">教材勘误</a> </li>
+                <li><a href="http://www.xredu.com/zhuanti/app/index.html" target="_blank">考试APP</a> </li>
+            </ul>
+            <span class="telsp">400-620-2002 </span>
+        </div>
+    </div>
+    <div class="mapdiv">
+        <span>当前位置:</span> <a href="http://product.xredu.com/">首页</a>> 课程图书列表
+    </div>
+    <div class="Pc_con">
+        <div class="Pc_con_left_big">
+            <div class="Pc_con_left">
+            <% Product.exam_type_id_hash.each do |k,v| %>
+            <% if k != 3 %>
+            <h2>
+                <%=v %>
+            </h2>
+            <% Product.exam_level_id_hash.each do |k1,v1| %>
+            <% if k==1 || (k == 2 && k1 == 1) %>
+                <h3>
+                    <%=v1 %>
+                </h3>
+                <% Product.type_id_hash.each do |k2,v2| %>
+                <p>
+                    <a href="/products/search?search[exam_type_id_eq]=<%=k %>&search[type_id_eq]=<%=k2 %>&search[exam_level_id_contains]=%2C<%=k1 %>%2C"><%=v2.gsub("课程","") %></a>
+                </p>
+                <% end %>
+            <% end %>
+            <% end %>
+            <% end %>
+            <% end %>
+            <div class="clear">
+            </div>
+        </div>
+            <div class="clear" style="height: 10px;">
+            </div>
+            <div class="Pc_con_left2">
+                <h2>
+                    一周销量排行
+                </h2>
+                <ul>
+                    <% product_index = 1 %>
+                    <% UserAccount.select("product_id").where("created_at >=?", DateTime.now-7.days).group("product_id").order("count(product_id) DESC").limit(10).each do |account| %>
+                    <% product = Product.where("id = ? and sale = 1", account.product_id).first %>
+                    <% if product.present? && product.effective? %>
+                    <li><span><%=product_index %></span> <a href="<%=product_path(:id => product.code)%>" target="_blank" class="imgPHa">
+                        <img alt="" src="<%= image_clip_path(product.img_path, '130') %>"/></a>
+                        <h3>
+                            <a href="<%=product_path(:id => product.code)%>" target="_blank"><%=product.name %><b>￥<%= format_money(product.sale_price) %></b></a>
+                        </h3>
+                        <div class="clear">
+                        </div>
+                    </li>
+                    <% product_index += 1 %>
+                    <% end %>
+                    <% end %>
+                </ul>
+                <div class="clear">
+                </div>
+            </div>
+            <div class="clear" style="height: 20px;">
+            </div>
+        </div>
+        <div class="Pc_con_right">
+            <div class="pro_col_con">
+                <h2>
+                    <b>课程图书商城</b>&nbsp;-&nbsp;<span>课程图书筛选</span>
+                </h2>
+                <ul>
+                    <li>
+                        <h3>
+                            类别:</h3>
+                        <a id="search_exam_type_id_eq_link" href="javascript:void(0)" onclick="search_products('search_exam_type_id_eq','')">全部</a> 
+                        <% Product.exam_type_id_hash.each do |k,v| %>
+                        <a id="search_exam_type_id_eq_link<%=k %>" href="javascript:void(0)" onclick="search_products('search_exam_type_id_eq','<%=k %>')"><%=v %></a>
+                        <% end %>
+                    </li>
+                    <li>
+                        <h3>
+                            等级:</h3>
+                        <a id="search_exam_level_id_contains_link" href="javascript:void(0)" onclick="search_products('search_exam_level_id_contains','')">全部</a>
+                        <% Product.exam_level_id_hash.each do |k,v| %>
+                        <a id="search_exam_level_id_contains_link<%=k %>" href="javascript:void(0)" onclick="search_products('search_exam_level_id_contains',',<%=k %>,')"><%=v %></a>
+                        <% end %>
+                    </li>
+                    <li>
+                        <h3>
+                            科目:</h3>
+                        <a id="search_type_id_eq_link" href="javascript:void(0)" onclick="search_products('search_type_id_eq','')">全部</a>
+                        <% Product.type_id_hash.each do |k,v| %>
+                        <a id="search_type_id_eq_link<%=k %>" href="javascript:void(0)" onclick="search_products('search_type_id_eq','<%=k %>')"><%=v %></a>
+                        <% end %>
+                    </li>
+                    <li class="nobor">
+                        <h3>
+                            方式:</h3>
+                        <a id="search_skxx_id_eq_link" href="javascript:void(0)" onclick="search_products('search_skxx_id_eq','')">全部</a>
+                        <% Product.skxx_id_hash.each do |k,v| %>
+                        <a id="search_skxx_id_eq_link<%=k %>" href="javascript:void(0)" onclick="search_products('search_skxx_id_eq','<%=k %>')"><%=v %></a>
+                        <% end %>
+                    </li>
+                </ul>
+                <div class="clear">
+                </div>
+            </div>
+            <div class="clear" style="height: 10px;">
+            </div>
+            <div class="nowsearch">
+                <span>排序</span>
+                <a href="javascript:void(0)" onclick="search_products('order_type','default')">默认</a>
+                <a href="javascript:void(0)" onclick="search_products('order_type','<%=(params[:order_type].nil? || params[:order_type] == '2') ? 1 : 2 %>')">销量</a>
+                <a href="javascript:void(0)" onclick="search_products('order_type','<%=(params[:order_type].nil? || params[:order_type] == '4') ? 3 : 4 %>')">人气</a>
+                <a href="javascript:void(0)" onclick="search_products('order_type','<%=(params[:order_type].nil? || params[:order_type] == '6') ? 5 : 6 %>')">上架</a>
+                <a href="javascript:void(0)" onclick="search_products('order_type','<%=(params[:order_type].nil? || params[:order_type] == '8') ? 7 : 8 %>')">价格</a>
+            </div>
+            <div class="prolist2">
+                <ul>
+                    <% if @products.empty? %>
+                    <li>暂无记录</li>
+                    <% end %>
+                    <% @products.each do |product| %>
+                    <li>
+                        <!--<img alt="" class="topItem" src="<%= GlobalSettings.css_domain %>PCTheme/images/proItem.png" />-->
+                        <a href="<%=product_path(:id => product.code)%>" target="_blank" class="imga">
+                            <img alt="" src="<%= image_clip_path(product.img_path, '140') %>" />
+                        </a>
+                        <div class="clear" style="height: 20px;">
+                        </div>
+                        <h2>
+                            <a href="<%=product_path(:id => product.code)%>" target="_blank"><%= product.name %></a>
+                        </h2>
+                        <h3>
+                            抢购价:<span>￥<%= format_money(product.sale_price) %></span>
+                        </h3>
+                        <div class="clear" style="height: 30px;">
+                        </div>
+                        <a href="<%=product_path(:id => product.code)%>" target="_blank" class="buya">点击抢购</a>
+                    </li>
+                    <% end %>
+                </ul>
+                <div class="clear" style="height: 30px;">
+                </div>
+            </div><div class="clear" style="height: 50px;">
+                </div>
+                <%= will_paginate @products, :class => "PC_pageer", :renderer => BootstrapPagination::Rails %>
+        </div>
+    </div>
+    <div class="clear" style="height: 50px;">
+    </div>
+    <%= form_for @search, :url => search_products_path, :html => {:method => :get} do |f| %>
+    <%= f.hidden_field :exam_type_id_eq %>
+    <%= f.hidden_field :type_id_eq %>
+    <%= f.hidden_field :exam_level_id_contains %>
+    <%= f.hidden_field :skxx_id_eq %>
+    <input type="hidden" id="order_type" name="order_type" value="<%=params[:order_type]%>" />
+    <% end %>
+    <%= render "public/footer" %>
+    <script type="text/javascript">
+    function search_products(name, value) {
+        $("#"+name).val(value);
+        $("#product_search").submit();
+    }
+    $(function() {
+        $("#search_exam_type_id_eq_link" + $("#search_exam_type_id_eq").val()).addClass("cur");
+        $("#search_exam_level_id_contains_link" + $("#search_exam_level_id_contains").val().replace(",","")).addClass("cur");
+        $("#search_type_id_eq_link" + $("#search_type_id_eq").val()).addClass("cur");
+        $("#search_skxx_id_eq_link" + $("#search_skxx_id_eq").val()).addClass("cur");
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<%= render :partial => '/admin/public/actions' %>
+<dl class="dl-horizontal">
+  <dt><strong>名称:</strong></dt>
+  <dd><%= @product_tree_group.name %></dd>
+  <dt><strong>课程包:</strong></dt>
+  <dd><ul id="product_tree_ztree" class="ztree"></ul></dd>
+  
+</dl>
+<%= content_for :stylesheets do -%>
+<link rel="stylesheet" href="/module/ztree/css/zTreeStyle.css" type="text/css" charset="utf-8">
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" charset="utf-8" src="/module/ztree/js/jquery.ztree.exedit-3.5.js"></script>
+<script type="text/javascript">
+<!--
+var setting = {
+	view: {
+		fontCss: getFont,
+		nameIsHTML: true
+	},
+	edit: {
+		enable: true,
+		showRemoveBtn: false,
+		showRenameBtn: false,
+        drag: {
+			isMove: true,
+              prev: true,  
+              next: true,  
+              inner: false  
+        }  
+    },
+	data: {
+		simpleData: {
+			enable: true
+		}
+	},
+	callback: {
+		beforeDrag: product_tree_group_before_drag,
+		beforeDrop: product_tree_group_before_drop
+	}
+};
+var product_tree_group_dragId;
+var product_tree_ztree_data = JSON.parse('<%= @product_tree_group.product_tree_data.html_safe %>');
+var knowledge_tree_ztree_data = JSON.parse('<%= @knowledge_trees.to_json.html_safe %>');
+var node_knowledge_tree_data = JSON.parse('<%= @product_tree_group.node_knowledge_tree_data.html_safe %>');
+
+function getFont(treeId, node) {
+	return node.font ? node.font : {};
+}
+function product_tree_group_before_drag(treeId, treeNodes) { 
+    for (var i=0,l=treeNodes.length; i<l; i++) {  
+           product_tree_group_dragId = treeNodes[i].pId;  
+        if (treeNodes[i].drag === false) {  
+            return false;  
+        }  
+    }  
+    return true;  
+}  
+function product_tree_group_before_drop(treeId, treeNodes, targetNode, moveType) {  
+  if(targetNode.pId == product_tree_group_dragId){
+	  if(treeNodes.length == 1) {
+		  var treeNode = treeNodes[0];
+		  var move_product_tree = treeNode.id + "";
+		  if(move_product_tree.indexOf('_') != -1) {
+			var move_product_tree_array = move_product_tree.split('_');
+			var move_product_tree_id = parseInt(move_product_tree_array[1]);
+		  	var knowledge_tree_ids = node_knowledge_tree_data[move_product_tree_array[0]];
+			var move_product_tree_id_index = knowledge_tree_ids.indexOf(move_product_tree_id);
+			var target_product_tree_id_index = knowledge_tree_ids.indexOf(targetNode.id.split('_')[1]);
+			if(move_product_tree_id_index != -1 && target_product_tree_id_index != -1) {
+				knowledge_tree_ids.remove(move_product_tree_id);
+				knowledge_tree_ids.insertAt(target_product_tree_id_index, move_product_tree_id);
+				product_tree_group_order(node_knowledge_tree_data);
+			}
+		  } else {
+			  var move_product_tree_object;
+			  var move_product_tree_id_index = -1;
+			  var target_product_tree_id_index = -1;
+			  for(var i=0,len=product_tree_ztree_data.length;i<len;i++) {
+			  	var product_tree = product_tree_ztree_data[i];
+			  	if(move_product_tree == product_tree.id) {
+			  		move_product_tree_id_index = i;
+			  		move_product_tree_object = product_tree;
+			  	}
+	
+			  	if(targetNode.id == product_tree.id) {
+			  		target_product_tree_id_index = i;
+			  	}
+			  }
+
+ 			if(move_product_tree_id_index != -1 && target_product_tree_id_index != -1) {
+ 				product_tree_ztree_data.removeAt(move_product_tree_id_index);
+ 				product_tree_ztree_data.insertAt(target_product_tree_id_index, move_product_tree_object);
+ 				product_tree_group_keys_order(product_tree_ztree_data);
+ 			}
+			  
+		  }
+	  }
+	  return true;  
+  }else{  
+    return false;  
+  }  
+}
+
+function product_tree_group_keys_order(product_tree_ztree_data) {
+	product_tree_ztree_data = product_tree_ztree_data;
+	$.post('<%= drag_drop_admin_product_tree_group_path(@product_tree_group, :format => :json) %>',{'product_tree_data' : JSON.stringify(product_tree_ztree_data)},function() {
+		
+	});
+}
+
+function product_tree_group_order(product_tree_ztree_data) {
+	node_knowledge_tree_data = node_knowledge_tree_data;
+	$.post('<%= drag_drop_admin_product_tree_group_path(@product_tree_group, :format => :json) %>',{'node_knowledge_tree_data' : JSON.stringify(node_knowledge_tree_data)},function() {
+		
+	});
+}
+
+$(document).ready(function(){
+	//换图标
+	for(var q in product_tree_ztree_data) {
+		var qnode = product_tree_ztree_data[q];
+		if(qnode.node_type == 1) {
+			qnode.icon = "/module/ztree/css/img/diy/3.png";
+		} else {
+			qnode.icon = "/module/ztree/css/img/diy/1_open.png";
+		}
+	}
+	$.fn.zTree.init($("#product_tree_ztree"), setting, product_tree_ztree_data);
+	var product_tree_ztree = $.fn.zTree.getZTreeObj("product_tree_ztree");
+	var product_tree_nodes = product_tree_ztree.getNodesByParam("node_type","1");
+	for(var i=0,len=product_tree_nodes.length;i<len;i++) {
+		var product_tree_node = product_tree_nodes[i];
+		var knowledge_nodes = node_knowledge_tree_data[product_tree_node.id];
+		if(knowledge_nodes.length > 0) {
+			for(var j=0,jlen=knowledge_nodes.length;j<jlen;j++) {
+				var node_id = knowledge_nodes[j];
+				for(var k in knowledge_tree_ztree_data) {
+					var node_obj = knowledge_tree_ztree_data[k];
+					if(node_id == node_obj.id) {
+						//alert(node_obj.id);
+						var kl_node = product_tree_ztree.getNodeByParam('id',product_tree_node.id + '_' + node_obj.pId);
+						if(!!kl_node) {
+							product_tree_ztree.addNodes(kl_node,{"id" : product_tree_node.id + '_'+node_obj.id, "name" : node_obj.name, "pId" : product_tree_node.id + '_'+node_obj.pId, font:{'color':'blue'}});
+						} else {
+							product_tree_ztree.addNodes(product_tree_node,{"id" : product_tree_node.id + '_'+node_obj.id, "name" : node_obj.name, "pId" : product_tree_node.id + '_'+node_obj.pId, font:{'color':'blue'}});
+						}
+						
+					}
+				
+				}
+			}
+		}
+	}
+});
+//-->
+</script>	
+<% end -%>
+  

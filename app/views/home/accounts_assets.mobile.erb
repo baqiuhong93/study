@@ -1,0 +1,55 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            讲义下载
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> <a href="<%= accounts_index_path %>">我的课程</a>>> 讲义下载
+    </h3>
+    
+   
+    <div class="my_classlist2">
+        <ul>
+          <% if @assets.empty? %>
+          <li>
+            <p>暂无记录</p>
+          </li>
+          <% end %>
+          <% @assets.each do |asset| %>
+            <li>
+               <p>
+               课程名称：<%= ProductTree.find_from_cache(asset.assetable_id).name %>
+               </p>
+               <p>
+               讲义名称：<span><%= asset.data_file_name %></span>
+               </p>
+               <p>
+               上传时间：<span><%= format_date(asset.created_at) %></span>
+               </p>
+               <p>
+               <a href="<%= accounts_assets_down_path(:account_id => params[:account_id], :asset_id => asset.id) %>">
+               下载
+               </a></p>
+               <div class="clear"></div>
+            </li>
+          <% end %>
+            
+        </ul>
+        <div class="clear">
+        </div>
+    </div>
+    <%= will_paginate @assets, :class => "news_page", :renderer => BootstrapPagination::Rails %>
+    <h3 class="hp_grh3">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+<%=cms_part_page("589") %>
+

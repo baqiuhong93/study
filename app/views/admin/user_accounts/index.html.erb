@@ -1,0 +1,65 @@
+<%= render :partial => '/admin/public/index_actions' %>
+<%= form_for @search, :url => admin_user_accounts_path, :html => {:method => :get, :class => "form-horizontal"} do |f| %>
+<div class="control-group">
+	<%= f.label :user_id_eq, "用户ID：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.text_field :user_id_eq %>
+  </div>
+</div>
+<div class="control-group">
+	<%= f.label :user_name_eq, "用户名：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.text_field :user_name_eq %>
+  </div>
+</div>
+<div class="control-group">
+	<%= f.label :order_code_eq, "订单号：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.text_field :order_code_eq %>
+  </div>
+</div>
+<div class="control-group">
+	<%= f.label :product_name_contains, "课程产品名称：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.text_field :product_name_contains %>
+  </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+		<%= f.submit "查询", :disable_with => '查询ing...', :class => "btn" %>
+    </div>
+  </div>
+<% end %>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+              <th>用户名</th>
+              <th>订单号</th>
+              <th>产品</th>
+              <th>有效类型</th>
+              <th>有效值</th>
+              <th>状态</th>
+			  <th>创建时间</th>
+			  <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @user_accounts.each do |user_account| %>
+      <tr>
+		  		<td><%= user_account.user_name %></td>
+		  		<td><%= link_to user_account.order_code, admin_order_path(:id => user_account.order_id) %></td>
+		  		<td><%= link_to user_account.product_name, admin_product_path(:id => user_account.product_id) %></td>
+		  		<td><%= Product.product_type_hash[user_account.effect_type] %></td>
+		  		<td><%= user_account.effect_str %></td>
+		  		<td><%= UserAccount.status_hash[user_account.status] %></td>
+				<td><%= format_date(user_account.created_at) %></td>
+		       	<td>
+		<% if can? :destroy, UserAccount %>
+          <%= link_to (user_account.status == 1 ? "冻结" : "解冻"), admin_user_account_path(user_account), :method => :delete, :data => { :confirm => "确认#{user_account.status == 1 ? '冻结' : '解冻'}?" } %>
+		<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @user_accounts, :renderer => BootstrapPagination::Rails %>

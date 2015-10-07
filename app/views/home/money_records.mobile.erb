@@ -1,0 +1,130 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p id="ttp">
+            充值消费记录
+        </p>
+	<div class="clear">
+	</div>
+</div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+   <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> <%= @record_type == 1 ? '充值记录' : '消费记录' %>
+    </h3>
+     <h2 class="my_classh2">
+        <span class="pop">账户余额:<b>￥<%= format_money(@current_user.now_balance) %></b></span> <a href="<%= user_recharges_index_path %>">充值></a>
+        <div class="clear">
+        </div>
+    </h2>
+<div class="my_class_card_tt">
+        <span class="<%= @record_type == 1 ? '' : 'nonosp' %>" id="bjbtn"><a href="<%= user_money_records_path %>">充值记录</a></span> <span class="<%= @record_type == 2 ? '' : 'nonosp' %>" id="listbtn"><a href="<%= user_money_records_path(:record_type => 2) %>">消费记录</a></span>
+</div>
+
+<div class="my_classlist2" id="list" style="margin-top: -1px; padding-top: 1px;">
+    <div class="my_class_card_con" style=" border-top:none;">
+        <ul>
+            <% if @record_type == 1 %>
+            <% @money_records.each do |money_record| %>
+          <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                  
+                    <tr>
+                        <td class="tttd3">
+                            充值金额：
+                        </td>
+                        <td>
+                            <span>￥<%= format_money(money_record.amount) %></span>
+                        </td>
+                        <td class="tttd3">
+                            充值时间：
+                        </td>
+                        <td>
+                            <%= format_date(money_record.created_at) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            充值方式：
+                        </td>
+                        <td>
+                            <%= Order.pay_type_hash[money_record.pay_type] %>
+                        </td>
+                        <td class="tttd3">
+                            状态：
+                        </td>
+                        <td>
+                            <font><%= UserMoneyRecord.chongzhi_status_hash[money_record.status] %></font>
+                        </td>
+                    </tr>
+                </table>
+                <% if money_record.weifukuan? %>
+                <div class="btn1_1">
+                    <a class="posa" href="<%= user_recharges_pay_path(:id => money_record.id) %>" target="_recharge_pay">支付</a>
+                </div>
+                <% end %>
+            </li>
+                <% end %>
+            <% end %>
+
+            <% if @record_type == 2 %>
+            <% @money_records.each do |money_record| %>
+            <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                  
+                    <tr>
+                        <td class="tttd3">
+                            订单ID：
+                        </td>
+                        <td>
+                            <%= money_record.order_code %>
+                        </td>
+                        <td class="tttd3">
+                            消费金额：
+                        </td>
+                        <td>
+                            ￥<%= format_money(money_record.amount) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            消费时间：
+                        </td>
+                        <td>
+                            <%= format_date(money_record.created_at) %>
+                        </td>
+                        <td class="tttd3">
+                            状态：
+                        </td>
+                        <td>
+                            <font><%= UserMoneyRecord.xiaofei_status_hash[money_record.status] %></font>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+            <% end %>
+            <% end %>
+            <% if @money_records.empty? %>
+            <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td>暂无记录</td>
+                    </tr>
+                </table>
+            </li>
+            <% end %>
+
+
+            </ul>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+
+<%= will_paginate @money_records, :class => "news_page", :renderer => BootstrapPagination::Rails %>
+
+    <br />
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <%=cms_part_page("589") %>

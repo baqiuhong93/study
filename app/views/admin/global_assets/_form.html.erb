@@ -1,0 +1,18 @@
+<%= simple_form_for @global_asset, :url => (@global_asset.id.present? ? admin_global_asset_path(@global_asset) : admin_global_assets_path), :html => { :class => 'form-horizontal', :multipart => true } do |f| %>
+<div class="control-group">
+	<%= f.label :data_file_name, "名称：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :data_file_name, :maxlength => 80 %>
+	</div>
+</div>
+<div class="control-group">
+	<label class="control-label">文件：</label>
+	<div class="controls">
+	  <input type="file" name="data_file" id="data_file">
+	</div>
+</div>
+    <div class="form-actions">
+    <%= f.button :submit, "保存", :class => 'btn-primary' %>
+    <%= link_to '取消', admin_global_assets_path, :class => 'btn' %>
+  </div>
+<% end -%> 

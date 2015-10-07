@@ -1,0 +1,98 @@
+<% @_page_title =   "个人信息修改" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 个人信息</span>
+</div>
+<div class="min whHd960 mt10">
+<%= render "public/left_nav2" %>
+<div class="minR">
+	<div class="minR_bgwt  bd">
+		<div class="ttBox3"><b class="icon1">基础资料</b></div>	
+		<div class="hy_grxxTab">
+			<%= form_for @current_user, :url => update_user_profile_path, :method => :post, :html => { :id => "grxxForm", :onsubmit => "return update_user_profile();", :multipart => true } do |f| -%>
+			<table>
+				<tr>
+					<td><span class="mcz_s1"><%= f.label :full_name, "姓名：" %></span></td>
+					<td><%= f.text_field :full_name, :placeholder => "请输入您的姓名", :max_length => 20, :class => "mcar_int2" %><span class="cor_red">*</span></td>
+				</tr>
+				<tr>
+					<td><span class="mcz_s1"><%= f.label :gender, "性别：" %></span></td>
+					<td><%= f.select :gender, User.gender_hash.collect {|k,v| [v,k]}, :prompt => "请选择" %></td>
+				</tr>
+				<tr>
+					<td><span class="mcz_s1"><%= f.label :mobile_phone, "手机：" %></span></td>
+					<td><%= f.text_field :mobile_phone, :placeholder => "请输入您的手机号", :maxlength => 11, :class => "mcar_int2" %><span class="cor_red">*</span></td>
+				</tr>
+				<tr>
+					<td><span class="mcz_s1"><%= f.label :address, "地址：" %></span></td>
+					<td><%= f.text_field :address, :placeholder => "请输入您的地址", :maxlength => 255, :class => "mcar_int2" %><span class="cor_red">*</span></td>
+				</tr>
+				<tr>
+					<td><span class="mcz_s1"><%= f.label :email, "邮箱：" %></span></td>
+					<td><%= f.text_field :email, :placeholder => "请输入您的电子邮箱", :maxlength => 255, :class => "mcar_int2" %><span class="cor_red">*</span></td>
+				</tr>
+				<tr>
+					<td><span class="mcz_s1">头像：</span></td>
+					<td><input class="mkc_file" name="avatar" type="file" /><span class="cor_666">仅支持 jpg、png、gif、图片文件，且文件小于1M</span></td>
+				</tr>
+				<tr>
+					<td><span class="mcz_s1">&nbsp;</span></td>
+					<td><%= f.submit "", :class => "mcz_submit" %></td>
+				</tr>
+			</table>
+			<% end -%>	
+			
+		</div>
+	</div>
+	
+</div>
+
+
+<div class="clear"></div>
+</div>
+
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+jQuery(".slideTxtBox").slide();
+function update_user_profile() {
+
+	if ($("#user_full_name").val() == '') {
+		
+		alert("姓名不能为空!");
+		return false;
+	}
+	if ($("#user_gender").val() == '') {
+		
+		alert("性别不能为空!");
+		return false;
+	}
+	if ($("#user_mobile_phone").val() == '') {
+		
+		alert("手机不能为空!");
+		return false;
+	}
+	if ($("#user_address").val() == '') {
+		
+		alert("手机不能为空!");
+		return false;
+	}
+	if ($("#user_email").val() == '') {
+		
+		alert("邮箱不能为空!");
+		return false;
+	}
+	return true;
+	//$.post($("#grxxForm").attr("action"), $("#grxxForm").serialize(), function(data) {
+		
+	//	alert(data.msg);
+	//});
+}
+</script>	
+<% end -%>
+

@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><%= @product.name %>-欣瑞教育网校</title>
+<%= csrf_meta_tag %>
+<link type="text/css" rel="stylesheet" href="http://asset.xredu.com/css/wangxiao/wangx.css" />
+<link href="<%= GlobalSettings.css_domain %>css/2014310style.css" rel="stylesheet" type="text/css" />
+<link href="http://asset.xredu.com/css/easydialog.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src='http://asset.xredu.com/js/guanwang/jquery.js'></script>
+<script language="javascript" type="text/javascript" src="http://asset.xredu.com/js/easydialog.min.js"></script>
+<script src="http://asset.xredu.com/2014310js/top_st.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript">
+	function qiehuan(num){
+		for(var id = 0;id<=9;id++)
+		{
+			if(id==num)
+			{
+				document.getElementById("qh_con"+id).style.display="block";
+				document.getElementById("mynav"+id).className="nav_on";
+			}
+			else
+			{
+				document.getElementById("qh_con"+id).style.display="none";
+				document.getElementById("mynav"+id).className="";
+			}
+		}
+	}
+</script>
+<script type="text/javascript">
+ function zahe_2(name,cursel,n)
+ { 
+	for(i=1;i<=n;i++)
+		{ 
+			var menu=document.getElementById(name+i); 
+			var con=document.getElementById("fcon_"+name+"_"+i); 
+			menu.className=i==cursel?"hover":""; 
+			con.style.display=i==cursel?"block":"none"; 
+		} 
+ } 
+</script>
+<script type="text/javascript">
+function showListenMsgBoxForCc(title,spanId) {
+	easyDialog.open({
+	  container : {
+	  	width : '640px',
+	  	height : '412px',
+	    header : title,
+	    content : ''
+	  },
+	  overlay : true
+	});
+	$('#easyDialog_textId').html($(spanId).html());
+	$("#easyDialogWrapper").css("marginTop","-150px");
+}
+</script>
+
+</head>
+
+<body>
+<!--头部---开始---->
+<%= cms_part_page("142") %>
+<%= cms_part_page("166") %>
+
+<!--头部---结束---->
+<div class="index_main_wx">
+	<div class="xr_left">
+		<div class="xr_left_con1">
+			<div class="xr_cont1_tit"><span><%= @product.name %></span></div>
+			<div class="xrcont_c1"><span><img src="<%= image_clip_path(@product.img_path, '328') %>" /></span>原价：￥<%= format_money(@product.origin_price) %><br />现价：￥<%= format_money(@product.sale_price) %><br />
+		<% if @product.effect_type == 1 %>
+        有效期：<%= @product.effect_str %><br />
+		<% elsif @product.effect_type == 2 %>
+		有效天数：<%= @product.effect_str %><br />
+		<% end %>
+		说明:<%= @product.description %>
+		(
+		<% if @product.skxx_id == 1 %>面授
+		<% elsif @product.skxx_id == 2 %>网校
+		<% elsif @product.skxx_id == 3 %>教材
+		<% end %>
+		)<br />
+		特色：<%= @product.keywords%><br />
+		满意度：<img src="<%= GlobalSettings.image_domain%>images/zan.jpg"/> (<span id="product_click_num"><%= @product.click_num_from_cache %></span>人计划购买！)<strong>
+			<% if @product.effective? %>
+				<a id="xredu" target="_blank" href="<%= GlobalSettings.app_url + add_cart_index_path(:id => @product.id) %>"><img src="http://asset.xredu.com/images/wangxiao/st_but.jpg" /></a>
+			<% else %>
+				<a id="xredu" href="javascript:void(0)" onclick="alert('产品状态无效或产品已过期!');"><img src="http://asset.xredu.com/images/wangxiao/st_but.jpg" /></a>
+			<% end %>
+			
+		</strong>
+			</div>		
+		</div>
+		<div class="xr_left_con2">
+			<div class="xr_con2_tit2"><span><%= @product.name %>&nbsp;&nbsp;相关推荐</span></div>
+			 <%= cms_part_page("#kechengshiting_#{@product.id}", "584") %>
+		</div>	
+	</div>
+	<div class="xr_right">
+		<div class="xrright_tit"><span>欣瑞网校产品——服务流程</span></div>
+		<div class="xrright_con"><img src="<%= GlobalSettings.image_domain%>images/lct.jpg" /></div>
+	</div>	
+	<div class="clear"></div>
+	<div class="xr_proinfo">
+	<ul class="proinfo_tit">                                                     
+		<li class="hover" id="three1" onmouseover="zahe_2('three',1,3)"><a >产品详情</a ></li>	
+		<li id="three2" onmouseover="zahe_2('three',2,3)"><a >欣瑞实力</a ></li>	
+		<li id="three3" onmouseover="zahe_2('three',3,3)"><a >付款方式</a ></li>
+    </ul>
+     <%= @product.product_text.content.html_safe %>
+	</div>
+</div>
+<!--内容区---结束---->
+<%= form_for @product, :url => praise_product_path(@product), :method => :post do |f| %>
+
+<% end %>
+<script type="text/javascript" charset="utf-8">
+function praise_num_incr() {
+	$.post($("#edit_product_<%= @product.id %>").attr("action"), $("#edit_product_<%= @product.id %>").serialize(), function(data) {
+		$("#product_praise_num").text(data.praise_num);
+	});
+}
+	jQuery(function(){jQuery(".mChangeTag .mCon_btn").hover(function(){jQuery(this).parent().find(".mCon_btn").removeClass("mCon_Cutbtn");jQuery(this).addClass("mCon_Cutbtn");
+	var cutNum=jQuery(this).parent().find(".mCon_btn").index(this);jQuery(this).parents(".mChangeTag").find(".mCon_conTxt").hide();jQuery(this).parents(".mChangeTag").find(".mCon_conTxt").eq(cutNum).show();})});
+    <!--GA产品信息开始-->
+	var productAnalytics = {'id':'<%= @product.id %>','name': '<%= @product.name %>','price':'<%= format_money(@product.sale_price) %>','category': '<%= @product.skxx_id %>'==1?'面授':'<%= @product.skxx_id %>'==2?'网校':'<%= @product.skxx_id %>'==3?'教材':'未分类','brand': '欣瑞教育','variant':'<%= @product.effect_str %>' + '_' + '<%= @product.description %>','position': 1};
+	var productState = <%= @product.effective? %>;
+	<!--GA产品信息结束-->
+</script>
+<%= cms_part_page("582") %>
+</body>
+</html>

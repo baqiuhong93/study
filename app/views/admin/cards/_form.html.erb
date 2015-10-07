@@ -1,0 +1,59 @@
+<%= simple_form_for @card, :url => (@card.id.present? ? admin_card_path(@card) : admin_cards_path), :html => { :class => 'form-horizontal', :onsubmit => "return valid_card_form()" } do |f| %>
+<%= f.input :name, label: '名称：', hint: 'No special characters.' %>
+    <%= f.input :description, label: '简介：', as: 'text', input_html: { rows: 5 } %>
+    <%= f.input :group, label: '类型：', collection: Card.group_hash.map {|k,v| [v,k]}, include_blank: '请选择', :input_html => { :onchange => 'change_group(this.value)' } %>
+    <%= f.input :price, label: '面值：' %>
+    <%= f.input :onlined_at, label: '生效时间：', as: 'string', input_html: { readonly: 'true', class: "Wdate", onfocus: "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})", value: format_date(@card.onlined_at)} %>
+    <%= f.input :expired_at, label: '过期时间：', as: 'string', input_html: { readonly: 'true', class: "Wdate", onfocus: "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})", value: format_date(@card.expired_at)} %>
+    <%= f.input :card_type, label: '属性：', collection: Card.card_type_hash.map {|k,v| [v,k]}, include_blank: '请选择' %>
+	<span id="card_product_span" style="display:none;">
+	<%= f.input :select_num, label: '选择数量：' %>
+	<%= f.input :must_num, label: '必选数量：' %>
+	<div class="input string optional"><label class="string optional control-label" for="card_product_objects">产品课程：</label><input class="string optional" id="card_products" name="card[products]" type="text" style="width:400px;" /></div>
+	</span>
+    <%= f.hidden_field :total_num %>
+    <%= f.hidden_field :status %>
+    <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to '取消', admin_cards_path, :class => 'btn' %>
+  </div>
+<% end -%> 
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8" src="/module/my97/WdatePicker.js"></script>
+<script type="text/javascript">
+function valid_card_form() {
+	var _group = $('#card_group').val();
+	if(_group != 4) {
+		var card_products_array = $("#card_products").select2("data");
+		if(card_products_array.length == 0) {
+			alert('请选择产品！');
+			return false;
+		}
+		var card_products_str = JSON.stringify(card_products_array);
+		if(card_products_str.length > 2000) {
+			alert('选择产品超过限制！');
+			return false;
+		}
+		$('#card_products').val(card_products_str);
+	}
+	return true;
+}
+function change_group(value) {
+	if(value == '4' || value == '') {
+		$('#card_product_span').hide();
+	} else {
+		$('#card_product_span').show();
+	}
+}
+$(function(){
+	change_group('<%= @card.group %>');
+	$.get('<%= admin_products_path(:format => :json) %>', {}, function(data) {
+		$("#card_products").select2({data:data, placeholder: "请选择课程产品", multiple: true});
+		<% if !@card.products.nil? %>
+		$("#card_products").select2("data", <%= @card.products.html_safe %>);
+		<% end %>
+	});	
+});
+</script>
+<% end -%>

@@ -1,0 +1,6 @@
+<ul id="collection_controller_actions" class="nav nav-tabs">
+	<li><%= link_to '<i class="icon-th-list"></i>列表'.html_safe, admin_card_card_nos_path(@card) %></li>
+	<li class="active"><%= link_to '<i class="icon-plus"></i>新增'.html_safe, new_admin_card_card_no_path(@card) %></li>
+</ul>
+
+<%= render :partial => 'form' %>

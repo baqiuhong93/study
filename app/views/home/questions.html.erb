@@ -1,0 +1,72 @@
+<% @_page_title =   "我的答疑" %>
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+  <span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 我的答疑</span>
+</div>
+<div class="wg_sfTuShu mt10 whHd960">
+<div class="wg_aboutBox">
+<%= render "public/left_nav2" %>
+<div class="wg_aboutBoxR wg_aboutBoxRHd bd">
+  <div class="ttBox3"><b class="icon1">我的提问</b></div>
+  <div class="gl_tt2_qie newClass">
+                        <a href="http://ask.xredu.com" class="qh_linkNone"><img src="<%= GlobalSettings.image_domain %>2015112/images/btn9.jpg" width="112" height="27" /></a>
+                    </div>
+                    <div class="hy_MyKcTab">
+                        <table width="100%">
+                            <tr>
+                                <td width="41%" align="left">问题标题</td>
+                                <td width="11%" align="center">回答</td>
+                                <td width="10%" align="center">评论</td>
+                                <td width="9%" align="center">状态</td>
+                                <td width="14%" align="center">提问时间</td>
+                                <td width="15%" align="center">答疑人</td>
+                            </tr>
+              <% if @question_objs["records"].empty? %>
+  <tr>
+    <td align="center" rolspan="6">暂无记录</td>
+  </tr>
+  <% end %>
+  <% @question_objs["records"].each do |question| %>
+  <tr>
+    <td align="left"><a href="<%= GlobalSettings.ask_url %>/question/onquestion.action?questionId=<%= question["id"] %>" target="_blank"><%= question["name"].length > 20 ? question["name"][0..20]+"..." : question["name"] %></a></td>
+    <td align="center"><%= question["flag"] == 1 ? 1 : 0 %></td>
+    <td align="center"><%= question["review_num"] %></td>
+    <td align="center"><img src="<%= GlobalSettings.image_domain %>images/<%= question["flag"] == 1 ? "mkc_sq" : "mov_sq1" %>.jpg" width="24" height="22" /></td>
+    <td align="center"><%= question["created_at"] %></td>
+    <td align="center"><%= question["teacher_name"] %></td>
+  </tr>
+  <% end %>
+                        </table>
+                    </div>
+                </div>
+<div class="mpage">
+    <% if @page == 1 %>
+    <a class="mpage_a" href="javascript:void(0)">首页</a>
+    <a class="mpage_a" href="javascript:void(0)">上一页</a>
+    <% else %>
+        <a class="mpage_a" href="<%= questions_path(:page => 1) %>">首页</a>
+        <a class="mpage_a" href="<%= questions_path(:page => @page-1) %>">上一页</a>
+    <% end %>
+    <% @question_objs["pageCount"].times.each do |p| %>
+      <% if p+1 == @page %>
+        <a class="mpage_a mpage_cuta" href="<%= questions_path(:page => p+1) %>"><%= p+1 %></a>
+      <% else %>
+        <a class="mpage_a" href="<%= questions_path(:page => p+1) %>"><%= p+1 %></a>
+      <% end %>
+    <% end %>
+    <% if @page == @question_objs["pageCount"] %>
+    <a class="mpage_a" href="javascript:void(0)">下一页</a>
+    <a class="mpage_a" href="javascript:void(0)">末页</a>
+    <% else %>
+        <a class="mpage_a" href="<%= questions_path(:page => @page+1) %>">下一页</a>
+        <a class="mpage_a" href="<%= questions_path(:page => @system_messages_count) %>">末页</a>
+    <% end %>
+</div>
+
+ </div>
+</div>
+
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->

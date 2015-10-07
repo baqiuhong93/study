@@ -1,0 +1,57 @@
+<%= form_for @knowledge_tree, :url => (@knowledge_tree.id.present? ? admin_knowledge_tree_path(@knowledge_tree) : admin_knowledge_trees_path), :html => { :class => 'form-horizontal', :id => 'knowledge_tree_form' } do |f| %>
+<%= f.hidden_field :pId %>
+<div class="control-group">
+	<%= f.label :name, "名称：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :name %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :description, "简介：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :description %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :order_num, "排序：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :order_num %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :node_type, "类型：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.select :node_type, [['目录', 0] ,['节点', 1]], :prompt => '请选择类型' %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :select_level, "层级：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :select_level %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :course_num, "时长：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :course_num %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :listen_path, "地址：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :listen_path %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :audition_path, "试听地址：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.text_field :audition_path %>
+	</div>
+</div>
+<div class="control-group">
+	<%= f.label :record, "制作中：", :class => "control-label" %>
+	<div class="controls">
+	  <%= f.select :record, [['否', false] ,['是', true]] %>
+	</div>
+</div>
+<% end -%> 

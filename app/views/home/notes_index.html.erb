@@ -1,0 +1,32 @@
+<% @_page_title =   "我的课堂笔记" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 笔记列表</span>
+</div>
+<div class="min whHd960 mt10">
+<%= render "public/left_nav2" %>
+<div class="minR">
+      <div class="minR_bgwt bd">
+          <div class="ttBox3"><b class="icon1">我的课堂笔记</b></div>	
+          <div class="minRLine1 bd mt10">
+              <b>产品名称</b>
+              <div class="minRLine1Cz">操作</div>
+          </div>
+           <% if @user_accounts.empty? %>
+	  		<div class="minRKcList bd" style="text-align:center">暂无笔记</div>
+	  		<% end %>
+          <% @user_accounts.each do |user_account| %>
+          <div class="minRKcList bd">
+          <p ><%= user_account.product_name %></p>
+          <a class="minRKcList1_2" href="<%= user_notes_show_path(:account_id => user_account.id) %>"><img src="<%= GlobalSettings.image_domain %>2015112/images/btn7.jpg" width="50" height="22"/></a></div>
+          <% end %>
+          <div class="clear"></div>
+           <%= will_paginate @user_accounts, :class => "mpage", :renderer => BootstrapPagination::Rails %>
+      </div>
+  </div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->

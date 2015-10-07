@@ -1,0 +1,123 @@
+<div class="container">
+	<div class="search_box">
+      <p>选择授课科目：</p>
+      <div class="select"><span class="text">请选择授课科目</span>
+          <div class="list" style="display:none;">
+              <ul>
+                  <li><a href="javascript:submit_teachers_form('')" id="subject_first_">全部科目</a></li>
+				  <% Teacher.subject_first_array.each do |l| %>
+				  	<li><a href="javascript:submit_teachers_form(<%= l[:id] %>)" id="subject_first_<%= l[:id] %>"><%= l[:text] %></a></li>
+				  <% end %>
+              </ul>
+          </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="teacherList">
+		<% @teachers.each do |teacher| %>
+        <dl class="teacher">
+            <dt><a href="<%= teacher_path(:id => teacher.code, :format => :html) %>" target="_blank"><img src="<%= image_clip_path(teacher.img_path, '215') %>" width="215" height="195" alt="<%= teacher.name %>" /></a></dt>
+            <dd class="jies">
+				<h4><a href="<%= teacher_path(:id => teacher.code, :format => :html) %>" target="_blank"><%= teacher.name %></a></h4>
+				<p><%= teacher.description %></p>
+				<a class="sht" href="<%= teacher_path(:id => teacher.code, :format => :html) %>" target="_blank">了解详细</a>
+            </dd>
+            <dd class="subject">
+            	<h5>所教科目</h5>
+                <p style="width:65px;margin:0 auto">
+			<% 
+      _subject_first = eval(teacher.subject_first.gsub("\"",""))
+      _subject_second = eval(teacher.subject_second.gsub("\"",""))
+       %>
+      <% Teacher.subject_first_array.each do |l| %>
+        <% if _subject_first.include?(l[:id]) %>
+        <% Teacher.subject_second_hash[l[:id]].each do |m| %>
+          <% if _subject_second.include?(m[:id])%>
+            <%= m[:text] %> 
+          <% end %>
+        <% end %>
+        <% end %>
+      <% end %>
+                </p>
+            </dd>
+        </dl>
+		<% end %>
+        <%= will_paginate @teachers, :class => "paging" %>
+    <div class="clear"></div>
+    </div>
+</div>
+<%= form_for @search, :url => teachers_path, :html => { :id => "teachers_search_form"} do |f| -%>
+<%= f.hidden_field :subject_first_contains %>
+<% end -%>
+
+<%= content_for :location do -%>
+<p id="location"><span class="red">您现在的位置：</span><a href="http://v.xiaoma.com/">名师首页</a> &gt; <a href="http://v.xiaoma.com/teachers/">名师阵容</a> </p>	
+<% end -%>
+
+
+<%= content_for :stylesheets do -%>
+<link href="http://v.xiaoma.com/css/teachList.css" rel="stylesheet" type="text/css" />
+<style type="text/css" media="screen">
+.paging {width:100%;margin-top:25px;text-align:center;}
+.paging ul li{float:left;}
+.paging a{height:20px; line-height:20px; padding:0 6px; border:1px solid #C0C0C0; margin:0 5px; background:#fff; display:inline-block; color:#322D29; font-family:"宋体";}
+.paging .active a{color:#618A10; border:1px solid #81AB2D; background-color:#E8FAC5;}
+</style>
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" src="http://v.xiaoma.com/js/tab.js"></script>
+<script type="text/javascript" charset="utf-8">
+function submit_teachers_form(v) {
+	$("#search_subject_first_contains").val(v);
+	$("#teachers_search_form").submit();
+}
+$(function(){
+	$(".topNavMain li:has(ul)").hover(function(){
+		$(this).children("ul").stop(true,true).slideDown(200)
+		},function(){$(this).children("ul").stop(true,true).slideUp(200)});
+	
+	/*selectBox*/
+	$(".search_box .select").hover( function () {
+		$(this).addClass("select_over");
+	},function () {
+		$(this).removeClass("select_over");
+	}).on('click',function(){
+		var _this = $(this),
+			_bthis = $(this).find(".list");
+		if ( _this.attr('isopen') ) {
+			_bthis.slideUp(200 , function(){
+				_this.removeAttr('isopen');
+			});			
+		} else {
+			_bthis.slideDown(200,function(){
+				_this.attr('isopen',"1");
+			});	
+		}
+	}).on('mouseleave',function(){
+		var _thisa = $(this).find(".list"),
+			_this = $(this);
+		_thisa.hide();
+		_this.removeAttr('isopen');
+	}),$(this).find(".list li").hover( function (){
+		$(this).addClass("sel");		
+	},function (){
+		$(this).removeClass("sel");	
+	}).on('click',function(){
+		var _this = $(this).html();
+		var _thisText = $(this).closest(".select").find(".text");
+		_thisText.html(_this);
+	})
+	$(".search_box .button input").click(function(){
+		var endinfo= "";
+		$(".search_box .select .text").each(function(i){
+			endinfo=endinfo+(i+1)+":"+$(this).html()+";\n";
+		});					
+	});
+	<% if (!params[:search].nil?) %>
+		$(".select .text").html($("#subject_first_<%= params[:search][:subject_first_contains] %>").text());
+	<% end %>
+});
+</script>
+<% end -%>
+

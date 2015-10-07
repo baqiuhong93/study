@@ -1,0 +1,77 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            消费记录
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> 充值卡充值
+    </h3>
+    <h2 class="my_classh2 bottompborder">
+        <span class="pop">账户余额：<b>￥<%= format_money(@current_user.now_balance) %></b></span> 
+        <div class="clear">
+        </div>
+    </h2>
+    <%= form_for @user_money_record, :url => user_recharges_create_path(:format => :json), :html => { :id => "user_money_record_form" } do |f| %>
+            <%= f.hidden_field :pay_type %>
+            <%= f.hidden_field :pay_code, :value => "directPay" %>
+    <div class="account_money_input bottompborder">
+        <span>充值金额： </span>
+        <%= f.text_field :amount, :class => "mczwy_int", :maxlength => 12 %> 
+        元
+        <p>
+            <span>*</span>精确到小数点后2位
+        </p>
+    </div>
+     <p class="buytools" style="border: none;">
+        <a href="javascript:valid_user_money_record_form()" class="yel">确认充值 </a>
+    </p>
+    <% end %>
+   
+
+   <br /><br />
+     <br />
+      <h3 class="hp_grh3 topborder">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+     <%=cms_part_page("589") %>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+
+function isMoney(s) {var patrn=/^(([1-9]\d*)|0)(\.\d{1,2})?$/;if (!patrn.exec(s)) return false;return true;}
+
+function valid_user_money_record_form() {
+  var user_money_record_amount_val = $.trim($("#user_money_record_amount").val());
+  if(user_money_record_amount_val == '') {
+    alert("充值金额不能为空!");
+    return;
+  }
+  if(!isMoney(user_money_record_amount_val)) {
+    alert("充值金额格式不正确!");
+    return;
+  }
+  
+
+  $.post($("#user_money_record_form").attr("action"), $("#user_money_record_form").serialize(), function(jsonData) {
+    if (jsonData.status == "success") {
+      location.href = "/recharges/pay/"+jsonData.recharge_id; 
+    } else {
+      alert(jsonData.msg);
+    }
+  });
+}
+$("#user_money_record_form").submit(function() {
+  valid_user_money_record_form();
+  return false;
+});
+</script> 
+<% end -%>

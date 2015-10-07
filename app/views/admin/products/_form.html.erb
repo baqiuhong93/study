@@ -1,0 +1,220 @@
+<%= simple_form_for @product, :url => (@product.id.present? ? admin_product_path(@product) : admin_products_path), :html => { :class => 'form-horizontal', :multipart => true, :onsubmit => 'return valid_product_form();', :id => "product_form" } do |f| %>
+<%= f.hidden_field :exam_level_id %>
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">基本信息</a></li>
+    <li><a href="#tab2" data-toggle="tab">产品内容</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+	    <%= f.input :name, label: '名称：', required: true %>
+	    <%= f.input :code, label: '编码：', required: true %>
+	    <%= f.input :tag_list, label: '标签：', hint: '多个标签用英文逗号（,）隔开' %>
+	    <%= f.input :keywords, label: '课程特色：', required: true %>
+	    <%= f.input :description, label: '课程说明：', required: true %>
+	    <%= f.input :origin_price, label: '原价：', required: true %>
+	    <%= f.input :sale_price, label: '售价：', required: true %>
+	    <%= f.input :exam_type_id, label: '考试类型：', collection: Product.exam_type_id_hash.map {|k,v| [v,k]}, include_blank: '请选择' %>
+	    <div class="input checkbox optional" style="height:30px;padding-left:0px;"><label class="checkbox optional control-label" for="teacher_recommend" style="padding-left:0px;">考试级别：</label>
+	    	<% Product.exam_level_id_hash.map do |k,v| %>
+	    	<input type="checkbox" style="width:20px;height:30px;float:none;margin-left:0px;" id="exam_level_id_1" value="<%=k %>"> <%=v %>
+	    	<% end %>
+	    </div>
+	    <%= f.input :type_id, label: '产品类型：', collection: Product.type_id_hash.map {|k,v| [v,k]}, include_blank: '请选择' %>
+	    <%= f.input :skxx_id, label: '授课形式：', collection: Product.skxx_id_hash.map {|k,v| [v,k]}, include_blank: '请选择' %>
+	    <%= f.input :sortrank, label: '排序：', collection: 1..99, include_blank: false %>
+	    <div class="input checkbox optional" style="height:30px;padding-left:0px;"><label class="checkbox optional control-label" for="teacher_recommend" style="padding-left:0px;">销售：</label><%= f.check_box :sale, :style => "width:220px;height:30px;float:none;margin-left:0px;" %></div>
+	    <div class="input checkbox optional" style="height:30px;padding-left:0px;"><label class="checkbox optional control-label" for="teacher_recommend" style="padding-left:0px;">推介：</label><%= f.check_box :available, :style => "width:220px;height:30px;float:none;margin-left:0px;" %></div>
+	    <%= f.input :img_path, label: '附图：', as: 'file' %>
+	    <%= f.input :effect_type, label: '有效类型：', collection: Product.product_type_hash.map {|k,v| [v,k]}, prompt: '请选择', input_html: {onchange: 'change_effect_type(this.value)'} %>
+	    <%= f.hidden_field :effect_str, label: '有效值：' %>
+	    <div id="product_effect_datetime" style="display:none;" class="input string optional"><label class="string optional control-label" for="product_effect_str">有效值：</label><input id="product_effect_datetime_text" class="string optional Wdate" onfocus= "WdatePicker({dateFmt:'yyyy-MM-dd'})" value="<%= @product.effect_str %>" size="50" type="text"></div>
+	    <div id="product_effect_days" style="display:none;" class="input string optional"><label class="string optional control-label" for="product_effect_str">有效值：</label><input id="product_effect_days_text" class="string optional" value="<%= @product.effect_str %>" size="50" type="text"></div>
+	    <%= f.input :onlined_at, label: '上线时间：', as: 'string', input_html: { readonly: 'true', class: "Wdate", onfocus: "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})", value: format_date(@product.onlined_at)} %>
+		<%= f.input :created_at, label: '创建时间：', as: 'string', input_html: { readonly: 'true', class: "Wdate", onfocus: "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})", value: format_date(@product.created_at)} %>
+	    <%= f.hidden_field :product_type, value: '1' %>
+	    <div class="input string optional" style="border:1px solid #fff;"><label class="string optional control-label" for="product_tree_group_data">课程包：</label><input class="string optional" id="product_tree_group_data" name="product[tree_group_data]" type="text" style="width:400px;" /></div>
+      	<div class="input string optional"  style="border:1px solid #fff;"><label class="string optional control-label" for="product_speaker_teachers">老师：</label><input class="string optional" id="product_speaker_teachers" name="product[speaker_teachers]" type="text" style="width:400px;" /></div>
+    </div>
+  	<div class="input string optional"  style="border:1px solid #fff;"><label class="string optional control-label" for="product_classworks">作业：</label><input class="string optional" id="product_classworks" name="product[product_classworks]" type="text" style="width:400px;" /></div>
+</div>
+    <div class="tab-pane" id="tab2">
+	    <%= f.fields_for :product_text,:required => '' do |builder| %>
+		<%= builder.text_area :content, :label => "内容：", :class => "span12" %>
+	    <% end %>
+    </div>
+    <div class="tab-pane" id="tab2">
+	    <%= f.text_area :mobile_description, :label => "手机版内容：", :class => "span12" %>
+    </div>
+  </div>
+</div>
+  <div class="form-actions">
+    <%= link_to '取消', admin_products_path, :class => 'btn' %>
+	<%= f.submit "保存", :disable_with => '保存...', :class => "btn btn-primary" %>
+  </div>
+<% end %>
+
+<% content_for :stylesheets do -%>
+<style type="text/css" media="screen">
+#s2id_product_product_tree_data_ids {
+	width :200px;
+}
+</style>
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<%= javascript_include_tag "ckeditor" %>
+<script type="text/javascript" charset="utf-8" src="/module/my97/WdatePicker.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+function change_effect_type(v) {
+	if(v == '') {
+		$('#product_effect_datetime').hide();
+		$('#product_effect_days').hide();
+	} else if (v == '1') {
+		$('#product_effect_datetime').show();
+		$('#product_effect_days').hide();
+	} else if(v == '2') {
+		$('#product_effect_days').show();
+		$('#product_effect_datetime').hide();
+	}
+	$('#product_effect_str').val('');
+}
+function valid_product_form() {
+	/**
+	var editor = CKEDITOR.instances.product_product_text_attributes_content;
+	if( editor.getData() == '') {
+		alert('产品内容不能为空！');
+		return false;
+	}
+	**/
+	var _product_name_val = $("#product_name").val();
+	if (_product_name_val == '') {
+		alert("产品名称不能为空!");
+		return false;
+	}
+	
+	var _product_code = $("#product_code").val();
+	if (_product_code == '') {
+		alert("产品编码不能为空!");
+		return false;
+	}
+	
+	var _product_origin_price_val = $("#product_origin_price").val();
+	if (_product_origin_price_val == '') {
+		alert("产品原价不能为空!");
+		return false;
+	}
+	var _product_sale_price_val = $("#product_sale_price").val();
+	if (_product_sale_price_val == '') {
+		alert("产品售价不能为空!");
+		return false;
+	}
+		var _product_sale_price_val = $("#product_keywords").val();
+	if (_product_sale_price_val == '') {
+		alert("课程特色不能为空!");
+		return false;
+	}
+		var _product_sale_price_val = $("#product_description").val();
+	if (_product_sale_price_val == '') {
+		alert("课程说明不能为空!");
+		return false;
+	}
+	var _product_effect_type = $("#product_effect_type").val();
+	if (_product_effect_type == '') {
+		alert("请选择产品有效类型!");
+		return false;
+	}
+	
+	if (_product_effect_type == '1') {
+		if ($('#product_effect_datetime_text').val() == '') {
+			alert("产品有效值不能为空!");
+			return false;
+		}
+	} else if(_product_effect_type == '2') {
+		if ($('#product_effect_days_text').val() == '') {
+			alert("产品有效值不能为空!");
+			return false;
+		}
+		
+	}
+	
+	
+	if (_product_effect_type == '1') {
+		$('#product_effect_str').val($('#product_effect_datetime_text').val());
+	} else if(_product_effect_type == '2') {
+		$('#product_effect_str').val($('#product_effect_days_text').val());
+	}
+	var _product_tree_group_data_arr = $("#product_tree_group_data").select2("data");
+	if (_product_tree_group_data_arr.length == 0) {
+		alert("请选择课程包!");
+		return false;
+	}
+	
+	var product_exam_level_ids = [];
+	$("input[id='exam_level_id_1']:checked").each(function() {
+		if(this.checked) {
+			product_exam_level_ids.push(this.value);
+		}
+	});
+	if(product_exam_level_ids.length > 0) {
+		$("#product_exam_level_id").val(","+product_exam_level_ids.join(",")+",");
+	} else {
+		$("#product_exam_level_id").val("");
+	}
+
+	$('#product_tree_group_data').val(JSON.stringify(_product_tree_group_data_arr));
+	$('#product_speaker_teachers').val(JSON.stringify($("#product_speaker_teachers").select2("data")));
+	$('#product_classworks').val(JSON.stringify($("#product_classworks").select2("data")));
+	return true;
+}
+
+function product_from_save() {
+	
+	$('#product_form').submit();
+}
+
+$(function() {
+	//init ckeditor
+	/**
+	CKEDITOR.replace( 'product_product_text_attributes_content', {
+		height: 500,
+	    toolbar: [
+               [ 'Source', 'RemoveFormat','Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink' ],
+               [ 'FontSize', 'TextColor', 'BGColor' ]
+       ]
+	});
+	**/
+	$.get('<%= admin_product_tree_groups_path(:format => :json) %>',{},function(jsonData) {
+		$("#product_tree_group_data").select2({data:jsonData, placeholder: "请选择课程包", multiple: true});
+		<% if @product.id.present? %>
+			$("#product_tree_group_data").select2("data", <%= @product.tree_group_data.html_safe %>);	
+		<% end %>
+	});
+	
+	$.get('<%= admin_teachers_path(:format => :json) %>',{},function(jsonData) {
+		$("#product_speaker_teachers").select2({data:jsonData, placeholder: "请选择老师", multiple: true});
+		<% if @product.id.present? %>
+			$("#product_speaker_teachers").select2("data", <%= @product.speaker_teachers_string.html_safe %>);	
+		<% end %>
+	});
+	
+	$.get('<%= admin_classworks_path(:format => :json) %>',{},function(jsonData) {
+		$("#product_classworks").select2({data:jsonData, placeholder: "请选择作业", multiple: true});
+		<% if @product.id.present? %>
+			$("#product_classworks").select2("data", <%= @product.classworks_string.html_safe %>);	
+		<% end %>
+	});
+	
+	<% if @product.id.present? %>
+	change_effect_type('<%= @product.effect_type %>');
+	$('#product_effect_str').val('<%= @product.effect_str %>');
+	<% end %>
+	<% @product.exam_level_id.split(",").each do |id| %>
+	<% if id.present? %>
+	$("input[id='exam_level_id_1'][value='<%=id%>']").attr("checked", true);
+	<% end %>
+	<% end %>
+});
+</script>
+<% end -%> 

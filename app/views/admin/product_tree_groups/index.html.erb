@@ -1,0 +1,48 @@
+<%= render :partial => '/admin/public/index_actions' %>
+<%= form_for @search, :url => admin_product_tree_groups_path, :html => {:method => :get, :class => "form-horizontal"} do |f| %>
+<div class="control-group">
+	<%= f.label :name_contains, "名称：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.text_field :name_contains %>
+  </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+		<%= f.submit "查询", :disable_with => '查询ing...', :class => "btn" %>
+    </div>
+  </div>
+<% end %>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>名称</th>
+      <th>创建时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @product_tree_groups.each do |product_tree_group| %>
+      <tr>
+        <td><%= link_to product_tree_group.id, admin_product_tree_group_path(product_tree_group) %></td>
+        <td><%= product_tree_group.name %></td>
+        <td><%= format_date(product_tree_group.created_at) %></td>
+        <td>
+		<% if can? :read, ProductTreeGroup %>
+		<%= link_to '详', admin_product_tree_group_path(product_tree_group) %>
+		<% end %>
+		<% if can? :update, ProductTreeGroup %>
+        <%= link_to '改',edit_admin_product_tree_group_path(product_tree_group) %>
+		<% end %>
+		<% if can? :destroy, ProductTreeGroup %>
+        <%= link_to '删',
+                      admin_product_tree_group_path(product_tree_group),
+                      :method => :delete,
+                      :data => { :confirm => '确认删除?' } %>
+		<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @product_tree_groups, :renderer => WillPaginate::ActionView::LinkRenderer %>

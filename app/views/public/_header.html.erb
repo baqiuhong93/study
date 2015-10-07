@@ -1,0 +1,47 @@
+
+<!--头部 开始-->
+<div class="wg_TopBg">
+	<div class="wg_TopBox whHd960">
+		<div class="wg_TopLeft">
+			<span>欢迎来到欣瑞教育！</span>
+		</div>
+		<div class="wg_TopTight">
+			<% if @current_user.nil? %>
+			<a href="<%= GlobalSettings.provider_url %>">登录</a >| <a href="<%= GlobalSettings.provider_url %>/users/sign_up">注册</a>
+			<% else %>
+			您好，<a class="cor_bs" title="<%= @current_user.name %>" href="<%= user_profile_path %>"><%= @current_user.name %></a> |
+			<a href="<%= cart_index_path %>" class="top_car">我的购物车(<%= CartCookieUtil.get_cart(session, cookies).cartItem.length %>)</a> |
+			<a href="<%= user_messages_system_path %>" class="top_info">网校通知公告</a> |
+			<a href="<%= user_profile_path %>" class="top_set">设置</a> |
+			<a href="<%= logout_path %>" class="top_logOut">退出</a>
+			<% end %>
+		</div>
+	</div>
+</div>
+<div class="wg_navList wg_navListNew bd whHd958 mt8">
+	<div class="wg_logo"><a href="http://www.xredu.com"><img src="<%= GlobalSettings.image_domain %>2015112/images/newlogo.jpg" width="188" height="62"/></a></div>
+	<div class="wg_navListM">
+		<div class="wg_navFxImg"><img src="<%= GlobalSettings.image_domain %>2015112/images/fxText4.jpg" width="121" height="30" /></div>
+		<div class="wg_navFxLogo"><img src="<%= GlobalSettings.image_domain %>2015112/images/newlogoBg.jpg" width="230" height="61" /></div>
+	</div>
+	<div class="wg_navListR">
+		<div class="wg_navListRTell_2">
+			<p>400-620-2002</p>
+		</div>
+	</div>
+</div>
+<div class="wg_FxnavBig wg_navBig mt10 whHd960">
+	<div class="wg_navBigL"></div>
+	<ul>
+		<li><a class="linke"  href="<%= root_path %>">首 &nbsp;页</a></li>
+		<li><a href="<%= accounts_index_path %>">我的课堂</a></li>
+		<li><a href="<%= user_money_records_path %>">我的账户</a></li>
+		<li><a href="<%= new_card_no_path %>">学习卡注册</a></li>
+		<li style="background:none"><a href="<%= questions_path %>">答疑专区</a></li>
+		<li><a href="<%= user_messages_system_path %>">网校通知</a></li>
+	</ul>
+	<div class="wg_navBigR"></div>
+</div>
+
+<!--头部 结束-->
+

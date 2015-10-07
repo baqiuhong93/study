@@ -1,0 +1,57 @@
+<% @_page_title =   "我的作业" %>
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+  <span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 我的作业</span>
+</div>
+<div class="wg_sfTuShu mt10 whHd960">
+<div class="wg_aboutBox">
+<%= render "public/left_nav2" %>
+<div class="wg_aboutBoxR wg_aboutBoxRHd bd">
+                    <div class="hy_MyKcTab">
+                        <table width="100%">
+                            <tr>
+                                <th>服务名称</th>
+                                <th>有效期</th>
+                                <th>服务状态</th>
+                                <th>服务老师</th>
+                                <th>操作</th>
+                            </tr>
+              <% if @user_classworks.empty? %>
+  <tr>
+    <td colspan="7">您没有作业批改服务，<a href="#">去看看有没有好的作业>></a></td>
+  </tr>
+  <% end %>
+  <% 
+    @user_classworks.each do |user_classwork|
+    classwork = Classwork.find_from_cache(user_classwork.classwork_id)
+    user = User.find_from_cache(user_classwork.admin_user_id)
+    if !classwork.nil?
+  %>
+  <tr>
+    <td><%= classwork.name %></td>
+    <td><%= format_date(classwork.start_at)[0..9] %>至<%= format_date(classwork.end_at)[0..9] %></td>
+    <td><%= user_classwork.status_text %></td>
+    <td><%= user.nil? ? "---" : user.full_name %></td>
+    <td>
+      <% if user_classwork.write? && classwork.effective? %>
+      <a class="cor_red" href="<%= edit_classwork_path(:id => user_classwork.id) %>">写作业</a>
+      <% end %>
+      <% if !user_classwork.write? %>
+      <a class="cor_red" href="<%= classwork_path(:id => user_classwork.id) %>">查看</a>
+      <% end %>
+    </td>
+  </tr>
+  <% end %>
+<% end %>
+                        </table>
+                    </div>
+                </div>
+<%= will_paginate @user_classworks, :class => "mpage", :renderer => BootstrapPagination::Rails %>
+
+ </div>
+</div>
+
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->

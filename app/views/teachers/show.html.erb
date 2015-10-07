@@ -1,0 +1,138 @@
+<% @_page_title = "#{@teacher.name}老师_名师阵容_小马过河国际教育" %>
+
+<div class="msxx">
+	<div class="msdt">
+    	<h3><% if cate_more_url("#mingshidongtai_#{@teacher.id}").present? %>
+        		<span class="more"><a href="<%= cate_more_url("#mingshidongtai_#{@teacher.id}") %>" target="_blank">更多 &gt;&gt;</a></span>
+        		<% end %></h3>
+        <%= cms_cate_list("#mingshidongtai_#{@teacher.id}", 9, "dl") %>         
+    </div>
+    <div class="dsidebar">
+    	<ul class="mszl">
+        	<h4>名师专栏
+        		<% if cate_more_url("#mingshizhuanlan_#{@teacher.id}").present? %>
+        		<span class="more"><a href="<%= cate_more_url("#mingshizhuanlan_#{@teacher.id}") %>" target="_blank">更多 &gt;&gt;</a></span>
+        		<% end %>
+        	</h4>
+        	<%= cms_cate_list("#mingshizhuanlan_#{@teacher.id}", 4, "li") %>  
+        </ul>
+        <%= cms_part_page("#gaofenxueyuan_#{@teacher.id}", "3") %>
+        <div class="xyjy">
+           <h2>学员评价</h2>  
+           <div id="marquee1">
+    	<%= cms_part_page("#xueyuanpingjia_#{@teacher.id}", "4") %>
+    		</div>
+           <div class="control"><a id="goL1" href="javascript:void(0);"></a><a id="goR1" href="javascript:void(0);"></a></div>
+        </div>
+    </div>
+	<div class="clear"></div>
+</div>
+
+<div class="column" id="zd">
+<div class="topbg2"></div>
+<%= cms_part_page("#jiaoxueqingjing_#{@teacher.id}", "5") %>
+<!--名师推荐-->
+<div class="topbg2"></div>
+<h3><a href="javascript:void(0)" title="名师推荐" target="_blank" class="js_t mstj_tit">名师推荐</a><em class="h3l"></em><!-- <span class="more"><a href="list.html" target="_blank">更多</a></span> --></h3>
+
+<div class="mstj">
+<div id="marquee4">
+    <ul style="height:240px;">
+		<% Teacher.where("recommend = ?", true).order("sortrank DESC, id DESC").each do |t| %>
+        <li style="background-color:#FFF"><a href="<%= teacher_path(:id => t.code, :format => :html) %>" target="_blank" title="">
+           <img width="171" height="155" alt="<%= t.name %>" src="<%= image_clip_path(t.img_path, '171') %>"></a>
+           <p><a href="<%= teacher_path(:id => t.code, :format => :html) %>" target="_blank"><%= t.name %>老师</a></p>
+        </li>
+		<% end %>
+    </ul>
+</div>
+<a class="prev" id="goL4" href="javascript:void(0);">加速左移</a> <a class="next" id="goR4" href="javascript:void(0);">加速右移</a>
+</div>
+</div>
+<div class="clear"></div>
+
+<%= content_for :teacher_info do -%>
+<div id="focus">
+	<dl class="focus_a">
+    	<dt><img src="<%= image_clip_path(@teacher.img_path, '425') %>" width="425" height="385" alt="<%= @teacher.name %>"></dt>
+        <dd>
+        	<h4><span class="name"><%= @teacher.name %></span>　老师</h4>
+            <p class="subject">科目：
+				<span>
+					<% 
+      _subject_first = eval(@teacher.subject_first.gsub("\"",""))
+      _subject_second = eval(@teacher.subject_second.gsub("\"",""))
+       %>
+      <% Teacher.subject_first_array.each do |l| %>
+        <% if _subject_first.include?(l[:id]) %>
+        <% Teacher.subject_second_hash[l[:id]].each do |m| %>
+          <% if _subject_second.include?(m[:id])%>
+            <%= m[:text] %> 
+          <% end %>
+        <% end %>
+        <% end %>
+      <% end %>
+				</span>
+			</p>
+            <p class="lsjj"><%= @teacher.description %></p>
+            <a href="http://chat.looyu.com/chat/chat/p.do?c=46101&amp;f=96991&amp;g=51273" target="_blank">预约试听</a>
+        </dd>
+    </dl>
+</div>
+<% end -%>
+
+<%= content_for :stylesheets do -%>
+<link href="http://v.xiaoma.com/css/teachContent.css" rel="stylesheet" type="text/css" />
+<style type="text/css" media="screen">
+/*名师推荐*/
+.mstj{width:960px;height:185px;margin:30px 0 20px;position:relative;}
+.mstj .prev,.mstj .next{ width:20px; height:32px;display:block; overflow:hidden;background:url(http://pics1.xiaoma.com.cn/xiaoma/video/images/home_bg20130206.gif) no-repeat; position:absolute; top:60px;text-indent:-999px;}
+.mstj .prev{ background-position:-30px -601px; left:15px;}
+.mstj .next{ background-position:-54px -601px; right:15px;}
+.mstj #marquee4{width:839px;height:185px;overflow:hidden;margin:0 auto;}
+.mstj #marquee4 ul li{float:left;width:171px;height:185px;margin:0 8px;}
+.mstj #marquee4 ul li p{width:171px;height:30px;text-align:center;line-height:30px;font-size:14px;font-weight:bold;}
+</style>
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" src="http://v.xiaoma.com/js/Marquee.js"></script>
+<script type="text/javascript" charset="utf-8">
+$(function(){
+	$('#marquee1').kxbdSuperMarquee({
+		isAuto:false,
+		distance:292,
+		btnGo:{left:'#goL1',right:'#goR1'},
+		direction:'left'
+	});
+	$('#marquee3').kxbdSuperMarquee({
+		distance:845,
+		time:3,
+		btnGo:{left:'#goL3',right:'#goR3'},
+		direction:'left'
+	});
+	$('#marquee5').kxbdSuperMarquee({
+		isMarquee:true,
+		isEqual:false,
+		scrollDelay:100,
+		controlBtn:{up:'#goUM',down:'#goDM'},
+		direction:'up'
+	});
+	
+	$('#marquee4').kxbdSuperMarquee({
+		isMarquee:true,
+		isEqual:false,
+		scrollDelay:20,
+		controlBtn:{left:'#goL4',right:'#goR4'},
+		direction:'left'
+	});
+	
+	
+	$(".topNavMain li:has(ul)").hover(function(){
+			$(this).children("ul").stop(true,true).slideDown(200)
+			},function(){
+				$(this).children("ul").stop(true,true).slideUp(200)
+				});
+});
+</script>	
+<% end -%>

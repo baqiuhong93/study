@@ -1,0 +1,75 @@
+<% @_page_title =   "我的订单" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+ 	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >>订单详情</span>
+</div>
+<div class="wg_sfTuShu mt10 whHd960">
+<div class="wg_aboutBox">
+<%= render "public/left_nav2" %>
+<div class="wg_aboutBoxR wg_aboutBoxRHd bd">
+                	<div class="wg_tt3"><b>订单详情</b></div>
+                    <div class="dd_List bd">
+                        <ul>
+                            <li>订单号：<%= @order.code %></li>
+                            <li>下单时间：<%= format_date(@order.created_at) %> </li>
+                            <li>支付方式：<%= @order.pay_type_text %> 
+							<% if @order.weifukuan? %>
+		          [<a href="<%= edit_order_path(:id => @order.code) %>">修改</a>]
+	                   <% end %></li>
+                            <li>订单状态：<%= Order.status_hash[@order.status] %></li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="hy_MyKcTab">
+                        <table width="100%">
+                            <tr>
+                                <th>订单名称</th>
+                                <th>订单金额</th>
+                                <th>优惠金额</th>
+                                <th>小计</th>
+                            </tr>
+                            <% @order.order_items.each do |item| %>
+  <tr>
+    <td align="center"><a href="<%= product_path_domain(item.product_id) %>" target="_blank" title="<%= item.product_name %>"><%= item.product_name %></a></td>
+    <td align="center">￥<%= format_money(item.sale_price) %></td>
+    <td align="center">￥0.00</td>
+    <td align="center">￥<%= format_money(item.sale_price_mul_num) %></td>
+  </tr>
+  <% end %>
+                        </table>
+                    </div>
+<div class="mcar_relt"><strong class="fl">优惠合计</strong><div class="fr">订单总金额：余额已支付<span class="cor_red">￥<%= format_money(@order.balance_amount) %></span>元 + 待支付<span class="cor_red">￥<%= format_money(@order.total_amount) %></span>元</div>
+                </div>
+<% if @order.yinhanghuikuan? %>
+<div class="mcar_yhList3">
+     <ul>
+      <li>
+        <strong>开户行：</strong>广发银行北京航天桥支行<br />
+        <strong>户名：</strong>北京欣瑞文化发展有限公司<br />
+        <strong>卡号：</strong>1370 7151 6010 0146 62
+      </li>
+	  </ul>
+     <div class="clear"></div>
+    </div>
+    <div class="mcar_txt1">  <strong>友情提示：</strong>部分地区银行汇款需要出示身份证，汇款完毕后可以通过以下方式确认到款。电话确认：400-620-2002（告知您的订单号、汇款银行、汇款金额和联系方式）。<br />
+    <span class="cor_red">注：到款后24小时内开通课程。</span>
+    </div>
+<% end %>
+<% if @order.weifukuan? && (@order.zhifubao? || @order.kuaiqian?) %>
+<div class="mcar_zf">
+	<form action="<%= pay_order_path(:id => @order.code) %>" method="get" accept-charset="utf-8" target="_system_pay">
+	<input class="mcar_submit2" value="" name="" type="submit" />
+	</form>
+</div>
+<% end %>
+</div>
+ </div>
+ </div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+
+

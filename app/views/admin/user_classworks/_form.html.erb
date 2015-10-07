@@ -1,0 +1,21 @@
+<%= simple_form_for @user_classwork, :url => (@user_classwork.id.present? ? admin_user_classwork_path(@user_classwork) : user_classworks_path), :html => { :class => 'form-horizontal' } do |f| %>
+    <%= f.input :classwork_name, :readonly => true, :label => "名称：" %>
+	<%= f.fields_for @user_classwork.classwork do |c| %>
+		<%= c.input :demand, :as => :text, :readonly => true, :label => "要求：" %>
+		<%= c.input :start_at, :as => :string, :readonly => true, :label => "开始时间：" %>
+		<%= c.input :end_at, :as => :string, :readonly => true, :label => "结束时间：" %>
+	<% end %>
+    <%= f.input :answer_text, :as => :text, :readonly => true, :label => "答案：" %>
+	<% if !@user_classwork.answer_file.empty? %>
+	<div class="input string optional readonly"><label for="user_classwork_answer_file" class="string optional control-label">附件：</label><input type="text" value="<%= @user_classwork.answer_file %>" size="50"><a href="<%= GlobalSettings.upload_view_url+@user_classwork.answer_file %>" target="_blank">下载</a></div>
+	<% end %>
+	<%= f.input :reply_text, :as => :text, :label => "回复：", input_html: { :class => "span8", :maxlength => 3800 } %>
+	<% if !@user_classwork.reply_file.empty? %>
+	<div class="input string optional readonly"><label for="user_classwork_reply_file" class="string optional control-label">回复附件：</label><input type="text" value="<%= @user_classwork.reply_file %>" size="50"><a href="<%= GlobalSettings.upload_view_url+@user_classwork.reply_file %>" target="_blank">下载</a></div>
+	<% end %>
+	<%= f.input :reply_file, :as => :file, :label => "回复附件：" %>
+    <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to '取消', admin_user_classworks_path, :class => 'btn' %>
+  </div>
+<% end -%> 

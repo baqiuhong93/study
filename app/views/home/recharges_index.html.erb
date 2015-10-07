@@ -1,0 +1,107 @@
+<% @_page_title =   "我要充值" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+ 	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 我要充值</span>
+</div>
+<div class="min whHd960 mt10">
+	<%= render "public/left_nav2" %>
+    <div class="wg_aboutBoxR wg_aboutBoxRHd bd">
+        <div class="wg_tt3"><b>立即充值</b></div>
+        <div class="mzhr_pub1 mt10"><b>账户余额</b></div>
+        <div class="dd_List bd">
+            <ul>
+                <li>您的账户余额：<span class="cor_red">￥<%= format_money(@current_user.now_balance) %></span></li>
+                <li><a href="javascript:void(0)" onclick="$('#wy_cz').click();" class="pubBtn1">立即充值</a></li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!--选项卡切换 开始-->
+         <div class="clickTag mzh_chg mt10">
+          <div class="mzhr_pub1 mt10"><b>网银充值</b></div>
+          <div class="chgConList">
+            <div class="chgCon ">
+             <div class="wg_gxBoxPd">
+            <%= form_for @user_money_record, :url => user_recharges_create_path(:format => :json), :html => { :id => "user_money_record_form" } do |f| %>
+            <%= f.hidden_field :pay_type %>
+             <div class="wg_gxBoxT1_1"> 请输入充值金额：<%= f.text_field :amount, :class => "mczwy_int", :maxlength => 12 %> 元（精确到小数点后2位）</div>
+              <div class="wg_gxBoxT1_1">  网银直接支付：<span class="cor_red">由支付宝提供接口，确保您的资金安全</span></div>
+             <div class="wg_gxBoxLi1_6">
+              <ul>
+               <% Order.pay_code_hash.each do |k,v| %>
+                <% if k != "directPay" %>
+                  <li>
+                 <%= f.radio_button :pay_code, k, :class => "mcar_rad2", :id => "user_money_record_pay_code" %>
+                    <img src="<%= GlobalSettings.image_domain %>images/<%= k %>.jpg" width="126" height="36" />
+                  </li>
+                <% end %>
+               <% end %>
+              </ul>
+              <div class="clear"></div>
+             </div>
+             <div class="wg_gxBoxT1_1"><strong>如果您使用其他银行卡支付，请选择：</strong></div>
+             <div class="mcar_t2"><span class="fl"><%= f.radio_button :pay_code, "directPay", :id => "user_money_record_pay_code" %><strong>支付宝支付</strong><span class="cor_bs">（支付宝支持国内各大银行，快速完成支付）</span></span><span class="fr">支付流程介绍  客服电话：0571-88156688</span></div>
+             <div class="mcar_submit"><input value="" class="mcz_submit" name="" type="button" onclick="valid_user_money_record_form()" /></div>
+             <% end %>
+             </div>
+            </div>
+          </div>
+         </div>
+     	<!--End-->
+    
+    </div>
+	<div class="clear"></div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+<%= content_for :stylesheets do -%>
+<link rel="stylesheet" href="/module/easydialog/easydialog.css" />	
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8" src="/module/easydialog/easydialog.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+function isMoney(s) {var patrn=/^(([1-9]\d*)|0)(\.\d{1,2})?$/;if (!patrn.exec(s)) return false;return true;}
+
+function valid_user_money_record_form() {
+	var user_money_record_amount_val = $.trim($("#user_money_record_amount").val());
+	if(user_money_record_amount_val == '') {
+		alert("充值金额不能为空!");
+		return;
+	}
+	if(!isMoney(user_money_record_amount_val)) {
+		alert("充值金额格式不正确!");
+		return;
+	}
+	
+	var user_money_record_pay_code_val = $("input[id=user_money_record_pay_code]:checked").val();
+	if(user_money_record_pay_code_val == '') {
+		alert("请选择支付方式!");
+		return;
+	}
+	$.post($("#user_money_record_form").attr("action"), $("#user_money_record_form").serialize(), function(jsonData) {
+		if (jsonData.status == "success") {
+			easyDialog.open({
+				container : {
+					header : '账户充值',
+					content : '<a href="/recharges/pay/'+jsonData.recharge_id+'" target="_system_pay" class="pubBtn1">继续支付</a>',
+					noFn : true
+				},
+				fixed : false
+			});
+		} else {
+			alert(jsonData.msg);
+		}
+		
+	});
+}
+$("#user_money_record_form").submit(function() {
+  valid_user_money_record_form();
+  return false;
+});
+</script>	
+<% end -%>

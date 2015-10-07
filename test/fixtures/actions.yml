@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  description: MyString
+  controller_name: MyString
+  action_name: MyString
+  http_method: MyString
+  query_string: MyString
+
+two:
+  name: MyString
+  description: MyString
+  controller_name: MyString
+  action_name: MyString
+  http_method: MyString
+  query_string: MyString

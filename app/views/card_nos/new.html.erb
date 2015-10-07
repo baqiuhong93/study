@@ -1,0 +1,100 @@
+<% @_page_title =   "注入听课卡" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+ 	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 学习卡注册</span>
+</div>
+<div class="min whHd960 mt10">
+<%= render "public/left_nav2" %>
+<div class="minR">
+        	<div class="minR_bgwt  bd">
+            	<div class="ttBox3"><b class="icon1">注入听课卡</b></div>	
+                <div class="hy_grxxTab">
+		  <%= form_for @card_no, :html => {:method => :post, :onsubmit => "return valid_card_no_form();"} do |f| -%>
+		  <% flash.each do |name, msg| %>
+          	<%= content_tag :p, msg, :class => "cor_red" if msg.is_a?(String) %>
+    	  <% end %>
+                    <table>
+                        <tr>
+                            <td><%= label_tag :full_name, "姓名：" %></td>
+                            <td><input type="text" name="full_name" id="full_name" class="hy_input1" placeholder="请输入您的姓名" value="<%= @current_user.full_name %>"></td>
+                        </tr>
+                        <tr>
+                            <td><%= label_tag :mobile_phone, "手机：" %></td>
+                            <td><input type="text" name="mobile_phone" id="mobile_phone" class="hy_input1" placeholder="请输入您的手机" value="<%= @current_user.mobile_phone %>"></td>
+                        </tr>
+                        <tr>
+                            <td><%= f.label :code, "卡号：" %></td>
+                            <td><%= f.text_field :code, :placeholder => "请输入您的卡号", :class => "hy_input1" %></td>
+                        </tr>
+                        <tr>
+                            <td><%= f.label :passwd, "密码：" %></td>
+                            <td><%= f.password_field :passwd, :placeholder => "请输入您的密码", :class => "hy_input1" %></td>
+                        </tr>
+                        <!--
+                        <tr>
+                            <td><%= label_tag :captcha, "验证码：" %></td>
+                            <td><%= text_field_tag :captcha, nil, :maxlength => 6, :class => "mcar_int2 mcar_int3" %>
+                                 <%= captcha_tag :class => "mcz_coder", :width => 80, :height => 25 %></td>
+                        </tr>
+                        -->
+                        <tr>
+                            <td></td>
+                            <td><%= f.submit "", :class => "mcz_submit" %></td>
+                        </tr>
+                    </table>
+	             <% end -%>
+                </div>
+            </div>
+        	
+        </div>
+      </div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function valid_card_no_form() {
+	if ($("#full_name").val() == "") {
+		alert("姓名不能为空!");
+		$("#full_name").focus();
+		return false;
+	}
+	
+	if ($("#mobile_phone").val() == "") {
+		alert("手机不能为空!");
+		$("#mobile_phone").focus();
+		return false;
+	}
+	
+	if ($("#card_no_code").val() == "") {
+		alert("卡号不能为空!");
+		$("#card_no_code").focus();
+		return false;
+	}
+	if ($("#card_no_passwd").val() == "") {
+		alert("密码不能为空!");
+		$("#card_no_passwd").focus();
+		return false;
+	}
+    /**
+	if ($("#captcha").val() == "") {
+		alert("验证码不能为空!");
+		$("#captcha").focus();
+		return false;
+	}
+	if ($("#captcha").val().length != 6) {
+		alert("验证码不正确!");
+		$("#captcha").focus();
+		return false;
+	}
+    **/
+	return true;
+}
+</script>	
+<% end -%>
+
+
+

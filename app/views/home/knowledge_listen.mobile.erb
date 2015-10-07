@@ -1,0 +1,223 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p class="sm2">
+            <%= @user_account.product_name %>
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <div class="news_video">
+        <span id="knowledge_video">视频加载中...</span>
+        <div class="clear">
+        </div>
+    </div>
+    <div class="my_class_card_tt">
+        <span class="nonosp" id="bjbtn">课堂笔记</span> <span id="listbtn">讲义下载</span>
+    </div>
+    <div class="my_classlist2" id="list" style="margin-top: -1px; padding-top: 1px;">
+        <ul id="account_assets">
+            <li>
+                <p>暂无记录</p>
+            </li>
+        </ul>
+        <div class="clear">
+        </div>
+    </div>
+    <div class="my_classlist2" id="bj" style="margin-top: -1px; padding-top: 1px;">
+        <br />
+        <%= form_for @note, :url => update_user_note_path, :html => { :id => "note_form" } do |f| %>
+            <%= f.hidden_field :account_id %>
+            <%= f.hidden_field :knowledge_tree_id %>
+            <%= f.hidden_field :product_tree_id %>
+            <%= f.text_area :content, :maxlength => 3000 %>
+        <% end %>
+        <p class="my_classlist2_msg">
+            <span>*</span>您还可以输入<span id="textCount">3000</span>个字
+        </p>
+        <p class="btnp">
+            <a href="javascript:void(0)" onclick="save_user_note();">保存</a>
+        </p>
+        <div class="clear">
+        </div>
+        <br />
+    </div>
+    <h3 class="hp_grh3">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+<%=cms_part_page("589") %>
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8" src="<%= GlobalSettings.js_domain %>js/swfobject.js"></script>
+<script type="text/javascript">
+function words_deal() {
+            var curLength = $("#TextArea1").val().length;
+            if (curLength > 140) {
+                var num = $("#TextArea1").val().substr(0, 140);
+                $("#TextArea1").val(num);
+                alert("超过字数限制！");
+            }
+            else {
+                $("#textCount").text(140 - $("#TextArea1").val().length);
+            }
+        }
+<% 
+if !@knowledge_trees.nil? 
+    _index = @knowledge_trees.index(params[:kt_id].to_i)
+    if !_index.nil?
+        _pre = @knowledge_trees[_index-1]
+        _next = @knowledge_trees[_index+1]
+        if _index != 0
+        %>
+        $("#pre_knowledge").click(function(){
+            location.href = "<%= knowledge_listen_path(:account_id => @user_account.id, :pt_id => params[:pt_id], :tgd_id => params[:tgd_id], :kt_id => _pre) %>";
+        });
+        <%
+        else
+        %>
+        $("#pre_knowledge").click(function(){
+            alert("没有上一节");
+        });
+        <%
+        end
+        
+        if !_next.nil?
+        %>
+        $("#next_knowledge").click(function(){
+            location.href = "<%= knowledge_listen_path(:account_id => @user_account.id, :pt_id => params[:pt_id], :tgd_id => params[:tgd_id], :kt_id => _next) %>";
+        });
+        <%
+        else
+        %>
+        $("#next_knowledge").click(function(){
+            alert("没有下一节");
+        });
+        <%
+        end
+    else
+        %>
+        $("#pre_knowledge").click(function(){
+            alert("没有上一节");
+        });
+        $("#next_knowledge").click(function(){
+            alert("没有下一节");
+        });
+        <%
+    end
+%>
+<% end %>
+function save_user_note() {
+    
+    if ($.trim($("#note_content").val()) == '') {
+        alert("笔记内容不能为空!");
+        return;
+    }
+    $.post($("#note_form").attr("action"), $("#note_form").serialize(), function(data) {
+        alert(data.msg);
+    });
+}
+
+function flashChecker(){
+    var hasFlash=0;　　　　//是否安装了flash
+    var flashVersion=0;　　//flash版本
+    if(document.all) {
+        var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash'); 
+        if(swf) {
+            hasFlash=1;
+            VSwf=swf.GetVariable("$version");
+            flashVersion=parseInt(VSwf.split(" ")[1].split(",")[0]); 
+        }
+    }else{
+        if (navigator.plugins && navigator.plugins.length > 0) {
+            var swf=navigator.plugins["Shockwave Flash"];
+            if (swf){
+                hasFlash=1;
+                var words = swf.description.split(" ");
+                for (var i = 0; i < words.length; ++i) {
+                    if (isNaN(parseInt(words[i]))) continue;
+                        flashVersion = parseInt(words[i]);
+                    }
+                }
+            }
+    }
+    return {f:hasFlash,v:flashVersion};
+}
+var is_learn_schedule = false;
+
+function update_learn_schedule() {
+    
+    if(is_learn_schedule) {
+        var _spark_player_position = document.getElementById("knowledge_video").spark_player_position();
+        if (_spark_player_position > 0) {
+            setCookie("_knowledge_video_log", "<%= params[:account_id] %>_<%= params[:kt_id] %>_" + _spark_player_position, 30);
+        }
+    }
+}
+
+function users_check() {
+    $.post("/users/check_key.json", {}, function(data) {
+        if(data.success != 'true') {
+            location.href = "http://m.xredu.com/mobile/tuichu";
+        }
+    });
+}
+
+$(function() {
+    $("#list").show();
+            $("#bj").hide();
+            $("#bjbtn").addClass("nonosp");
+            $("#listbtn").removeClass("nonosp");
+            $("#bjbtn").click(function () {
+                $("#list").hide();
+                $("#bj").show();
+                $("#listbtn").addClass("nonosp");
+                $("#bjbtn").removeClass("nonosp");
+            });
+            $("#listbtn").click(function () {
+                $("#list").show();
+                $("#bj").hide();
+                $("#bjbtn").addClass("nonosp");
+                $("#listbtn").removeClass("nonosp");
+            });
+    $.get("<%= accounts_assets_path(:account_id => params[:account_id], :format => :json) %>", {"t" : new Date().getTime()}, function(data) {
+        var assets = []
+        for(var i=0,len=data.length;i<len;i++) {
+            var asset = data[i];
+            assets.push('<li><p>讲义名称：<span>'+asset['data_file_name']+'</span></p><p><a href="/accounts/assets/down/<%= params[:account_id] %>/'+asset['assetable_id']+'">下载 </a></p><div class="clear"></div></li>');
+        }
+        if (assets.length > 0) {
+            $("#account_assets").html(assets.join(''));
+        }
+    });
+    <% if @knowledge_tree.listen_path.end_with?(".swf") %>
+        var flashvars = {};
+        var params = {allowfullscreen:"true"};
+        var attributes = {};
+        swfobject.embedSWF("<%= @knowledge_tree.listen_path %>", "knowledge_video", "616", "352", "9.0.0","<%= GlobalSettings.js_domain %>js/expressInstall.swf", flashvars, params, attributes);
+    <% else %>
+        var flashObj = flashChecker();
+        /**
+        if(!!flashObj && !!flashObj.f && flashObj.v > 10) {
+            is_learn_schedule = true;
+            var params={"userid":"<%= GlobalSettings.cc_id %>","videoid":"<%= @knowledge_tree.video_id %>","mode":"api","autostart":"true"};
+            swfobject.embedSWF("http://union.bokecc.com/flash/player.swf", "knowledge_video", "616", "352", "9.0.0", "<%= GlobalSettings.js_domain %>js/expressInstall.swf",params,{"wmode":"transparent","allowFullScreen":true,"allowScriptAccess":"always"});
+            setInterval(update_learn_schedule, 3000);
+        } else {
+            **/
+            var scriptNode = document.createElement("script");
+            scriptNode.type = "text/javascript";
+            scriptNode.src = "<%= @knowledge_tree.listen_path.html_safe %>";
+            document.getElementById("knowledge_video").innerHTML = "";
+            document.getElementById("knowledge_video").appendChild(scriptNode);
+        //}
+    <% end %>
+    setInterval("users_check()",30000);
+
+});
+</script>   
+<% end -%>
+        

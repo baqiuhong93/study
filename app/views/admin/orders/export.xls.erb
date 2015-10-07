@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">订单号</Data></Cell>
+        <Cell><Data ss:Type="String">用户名</Data></Cell>
+        <Cell><Data ss:Type="String">支付方式</Data></Cell>
+        <Cell><Data ss:Type="String">订单状态</Data></Cell>
+		<Cell><Data ss:Type="String">总金额</Data></Cell>
+		<Cell><Data ss:Type="String">优惠金额</Data></Cell>
+		<Cell><Data ss:Type="String">订单项数</Data></Cell>
+		<Cell><Data ss:Type="String">创建时间</Data></Cell>
+		<Cell><Data ss:Type="String">支付时间</Data></Cell>
+      </Row>
+    <% @orders.each do |order| %>
+      <Row>
+        <Cell><Data ss:Type="String"><%= order.code %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= order.user_name %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= Order.pay_type_hash[order.pay_type] %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= Order.status_hash[order.status] %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= order.amount %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= order.discount_amount %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= order.item_num %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= format_date(order.created_at) %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= format_date(order.paid_at) %></Data></Cell>
+      </Row>
+    <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

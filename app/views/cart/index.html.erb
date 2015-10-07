@@ -1,0 +1,93 @@
+<% @_page_title =   "我的购物车" %>
+<%= render "public/header" %>
+<% 
+cart = CartCookieUtil.get_cart(session, cookies)
+cartItems = cart.cartItem 
+%>
+<!--ga增强电商开始---->
+<script type="text/javascript">
+	var cartItems = {};
+    <% cartItems.each do |k,v| %>
+    	cartItems['<%= v.id %>'] = {
+			'id': '<%= v.id %>',
+			'name': '<%= v.name %>',
+			'category': '<%= Product.find(v.id).skxx_id %>'==1?'面授':'<%= Product.find(v.id).skxx_id %>'==2?'网校':'<%= Product.find(v.id).skxx_id %>'==3?'教材':'未分类',
+		  	'brand': '欣瑞教育',
+		  	'variant': '<%= Product.find(v.id).effect_str %>' + '_' + '<%= Product.find(v.id).description %>',
+		  	'price': '<%= format_money(v.sale_price) %>',
+		  	'quantity': 1
+		};
+    <% end %>
+</script>
+<!--ga增强电商结束---->
+<div class="min whHd960 mt10">
+    	<div class="minBg"><img src="<%= GlobalSettings.image_domain %>2015112/images/guwc1_1.jpg" width="960" height="47"/></div>
+    	<div class="minBoxTab mt10" id="TabBox">
+        	<table width="100%">
+            	<tr>
+                	<th width="376">商品名称</th>
+                    <th width="80">商品金额</th>
+                    <th width="80">优惠金额</th>
+                    <th>金额小计</th>
+                    <th>操作</th>
+                </tr>
+				<% if cartItems.empty? %>
+  <tr class="mcar_tr">
+    <td colspan="5" style="text-align:center;">您还没有购买课程！</td>
+  </tr>
+  <% else %>
+  	<% cartItems.each do |k,v| %>
+  <tr class="mcar_tr">
+    <td><a href="<%= product_path_domain(k) %>" title="<%= v.name %>" target="_blank"><%= v.name %></a></td>
+    <td align="center">￥<%= format_money(v.sale_price) %></td>
+    <td align="center">￥0.00</td>
+    <td align="center">￥<%= format_money(v.sale_price_mul_num) %></td>
+    <td align="center"><%= link_to '删除', cart_path(:id => k),:class => "cl1", :method => :delete, :onClick => "removeFromCart('#{v.id}');" , :data => { :confirm => "确认删除(#{v.name})?" } %></td>
+  </tr>
+	<% end %>
+  <% end %>
+                <tr bgcolor="#f7f7f7">
+                    <td colspan="6"  class="tdRight">订单总金额：￥<%= format_money(cart.get_amount) %></td>
+                </tr>
+            </table>
+        </div>
+        <script>
+        	var oTab=document.getElementById('TabBox');
+			var oTr=oTab.getElementsByTagName('tr')
+			var i=0
+			for(i=0;i<oTr.length;i++){
+				oTr[i].onmouseover=function(){
+					//alert('a')
+					this.style.background='#ebeeec'
+					}
+				oTr[i].onmouseout=function(){
+					//alert('a')
+					this.style.background=''
+					}
+				}
+        </script>
+        <div class="minBoxTabBtn mt15"><a href="http://product.xredu.com" target="_blank" class="left"><img src="<%= GlobalSettings.image_domain %>2015112/images/btn10.jpg" width="137" height="40" /></a><div class="yf_Btn"><span>应付总额：<em>￥<%= format_money(cart.get_amount) %></em></span><a  <%= cartItems.empty? ? "href=\"javascript:void(0)\" onclick=\"alert('购物车中没有产品!')\"".html_safe : "href=\"".html_safe+confirm_cart_index_path+"\" onClick=\"checkOut()\"".html_safe %>><img src="<%= GlobalSettings.image_domain %>2015112/images/btn11.jpg" width="110" height="39" /></a></div></div>
+    </div>
+    <script type="text/javascript">
+    // 电子商务结账流程步骤1
+    function checkOut() {
+    	for(var product in cartItems) {
+    		ga('ec:addProduct', cartItems[product]);
+    	}
+    	ga('ec:setAction','checkout', {
+    		'step': 1,
+    		'option': 'PC'
+		});
+		ga('send', 'event', 'Ecommerce', 'Checkout', 'Step_1-PC');
+    }
+    function removeFromCart(id) {
+    	ga('ec:addProduct',cartItems[id]);
+  		ga('ec:setAction', 'remove');
+  		ga('send', 'event', 'Ecommerce', 'Action', 'RemoveFromCart');
+    }
+    </script>
+<%= render "public/footer2" %>
+
+
+
+

@@ -1,0 +1,14 @@
+<%= simple_form_for @user_account, :url => (@user_account.id.present? ? admin_user_account_path(@user_account) : admin_user_accounts_path), :html => { :class => 'form-horizontal' } do |f| %>
+    <%= f.input :user %>
+    <%= f.input :order %>
+    <%= f.input :order_item %>
+    <%= f.input :product %>
+    <%= f.input :product_type %>
+    <%= f.input :effect_type %>
+    <%= f.input :effect_str %>
+    <%= f.input :status %>
+    <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to '取消', admin_user_accounts_path, :class => 'btn' %>
+  </div>
+<% end -%> 

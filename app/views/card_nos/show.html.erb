@@ -1,0 +1,48 @@
+<% @_page_title =   "注入听课卡" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+ 	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 修改密码</span>
+</div>
+<div class="min whHd960 mt10">
+<%= render "public/left_nav2" %>
+<div class="minR">
+        	<div class="minR_bgwt  bd">
+            	<div class="ttBox3"><b class="icon1">注卡成功</b></div>	
+                <div class="hy_grxxTab">
+		  <div class="mzk_alr">
+ 恭喜您，注卡成功!
+ </div>
+ <div class="mzk_tab">
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr class="mzk_th">
+    <td width="58%" align="center" valign="middle"><strong>产品名称</strong></td>
+    <td width="25%" align="center" valign="middle"><strong>有效期</strong></td>
+    <td width="17%" align="center" valign="middle"><strong>听课</strong></td>
+  </tr>
+  <% @user_accounts.each do |user_account| %>
+  <tr>
+    <td align="center"><a href="#"><%= user_account.product_name %></a></td>
+    <td align="center"><%= user_account.effect_str %></td>
+    <td align="center"><a href="<%= accounts_show_path(:id => user_account.id) %>"><img src="<%= GlobalSettings.css_domain %>images/img0624_02.jpg" width="67" height="25" /></a></td>
+  </tr>
+  <% end %>
+</table>
+ <div class="mzk_btnList">
+ <a class="pubBtn1" href="<%= accounts_index_path %>">去听课</a> &nbsp; <a href="<%= new_card_no_path %>" class="pubBtn1 pubBtn2">继续注卡</a>
+ </div>
+ </div>
+                </div>
+            </div>
+        	
+        </div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+
+
+
+

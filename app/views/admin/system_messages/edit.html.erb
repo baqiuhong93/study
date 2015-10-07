@@ -1,0 +1,66 @@
+<%= form_for @system_message, :url => (admin_system_message_path(@system_message)), :html => { :class => 'form-horizontal', :id => '_system_message_form', :onsubmit => "return valid_system_message_form()" } do |f| %>
+	<%= f.hidden_field :user_id %>
+	<div class="control-group">
+		<%= f.label :user_name, "接收用户：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.text_field :user_name %>
+		</div>
+	</div>
+	<div class="control-group">
+		<%= f.label :content, "消息：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.text_area :content, :rows => 8, :maxlength => 3600, :class => "span8" %>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+		  <%= f.submit "保存", :class => "btn btn-primary" %>
+		</div>
+	</div>
+<% end -%>
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+
+function valid_system_message_form() {
+	var _system_message_content = $("#system_message_content").val();
+	if (_system_message_content == '') {
+		alert("请输入消息内容!");
+		$("#system_message_content").focus();
+		return false;
+	}
+	if (!!$("#system_message_user_name").select2("data")) {
+		$("#system_message_user_name").val($("#system_message_user_name").select2("data").name);
+	}
+	return true;
+}
+
+$("#system_message_user_name").select2({
+	    placeholder: "请选择用户",
+	    minimumInputLength: 3,
+	    ajax: {
+	        url: "<%= admin_users_path(:format => :json) %>",
+	        dataType: 'json',
+	        quietMillis: 100,
+	        data: function (term, page) {
+	            return {
+	                q: term,
+	                page_limit: 10,
+	                page: page
+	            };
+	        },
+	        results: function (data, page) {
+	            return {results: data, more: false};
+	        }
+	    },
+		<% if !@system_message.user_id.nil? && @system_message.user_id > 0 %>
+    	initSelection: function(element, callback) {	
+			callback({"id":<%= @system_message.user_id %>, "name":"<%= @system_message.user_name %>"});
+    	},
+		<% end %>
+	    formatResult: function(user) {return user.name},
+	    formatSelection: function(user) {$("#system_message_user_id").val(user.id);return user.name},
+	    dropdownCssClass: "bigdrop",
+	    escapeMarkup: function (m) { return m; }
+	});
+</script>
+<% end -%>

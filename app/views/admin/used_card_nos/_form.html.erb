@@ -1,0 +1,12 @@
+<%= simple_form_for @used_card_no, :url => (@used_card_no.id.present? ? admin_used_card_no_path(@used_card_no) : admin_used_card_nos_path), :html => { :class => 'form-horizontal' } do |f| %>
+    <%= f.input :card %>
+    <%= f.input :card_no %>
+    <%= f.input :user %>
+    <%= f.input :user_name %>
+    <%= f.input :code %>
+    <%= f.input :order_code %>
+    <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to '取消', admin_used_card_nos_path, :class => 'btn' %>
+  </div>
+<% end -%> 

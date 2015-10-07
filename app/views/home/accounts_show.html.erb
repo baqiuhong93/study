@@ -1,0 +1,162 @@
+<% @_page_title =   "我的听课列表" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> <a href="<%= accounts_index_path %>">我的课程</a> >> <%= @user_account.product_name %></span>
+</div>
+<div class="min whHd960 mt10">
+<%= render "public/left_nav2" %>
+<div class="minR">
+    <div class="minR_bgwt bd">
+        <div class="ttBox3"><b class="icon1"><%= @user_account.product_name %></b></div>	
+        <div class="stu_1con" id="course_show">
+		<% if !@user_account.product.nil? %>
+			<% @user_account.product.tree_group_data_array.each do |k| %>
+				<% _product_tree_group = ProductTreeGroup.find_from_cache(k['id']) %>
+				<% if !_product_tree_group.nil? %>
+					<% _product_tree_data_array = _product_tree_group.product_tree_data_array.collect { |x| x["id"] } %>
+					<% 
+					_product_tree_group.product_tree_data_array.each do |ptd|
+						if !_product_tree_data_array.include?(ptd['pId'])
+							_product_tree = ProductTree.find_from_cache(ptd["id"])
+							if !_product_tree.nil?
+					%>
+						<div class="stu_2t"><span class="stu_name1"><%= ptd['name'] %></span>课时：<%= _product_tree_group.knowledges_course_sum(ptd['id']) %>
+							<% if _product_tree.record %>
+							<div class="stu_noOk">制作中</div>
+							<% end %>
+						</div>
+						<div class="stu_2con">
+							<% 
+							_product_tree_group.product_tree_data_array.each do |s_ptd|
+								if s_ptd["pId"] == ptd["id"]
+									_product_tree = ProductTree.find_from_cache(s_ptd["id"])
+									if !_product_tree.nil?
+							%>
+		                    <div class="stu_4t" id="product_tree_<%= s_ptd['id'] %>">
+								<%= s_ptd["name"] %>
+								<% if _product_tree.record %>
+								<div class="stu_noOk">制作中</div>
+								<% end %>
+							</div>
+		                    <div class="stu_4con hidden">
+		                    <img class="stu_posImg" src="<%= GlobalSettings.image_domain %>2015112/images/stu_sq1.jpg" width="12" height="6" />
+							<%
+								knows =  _product_tree_group.node_knowledge_tree_data_hash[s_ptd['id'].to_s]
+								knows.each do |know|
+									_know = KnowledgeTree.find_from_cache(know)
+									if !_know.nil?
+										if !knows.include?(_know.pId)
+							%>
+		                    <div class="stu_5t" id="knowledge_id__<%= _know.id %>" p_id="<%= s_ptd['id'] %>">
+								<%= _know.name %>
+								<% if _know.record %>
+								<div class="stu_noOk">制作中</div>
+								<% end %>
+							</div>
+		                    <div class="stu_5con hidden">
+		                     <ul>
+								 <% 
+								 knows.each do |know1|
+									 _know1 = KnowledgeTree.find_from_cache(know1)
+									 if !_know1.nil?
+									 	if _know1.pId == _know.id
+								%>
+								 	<li id="knowledge_id_<%= _know1.id %>" p_id="<%= _know.id %>">
+										<span class="stu_5namet">
+											<% if _know1.record %>
+											<%= _know1.name %>
+											<% else %>
+											<a href="<%= knowledge_listen_path(:account_id => @user_account.id, :pt_id => s_ptd['id'], :tgd_id => k['id'], :kt_id => _know1.id) %>"><%= _know1.name %></a>
+											<% end %>
+										</span>
+										<% if !_know1.record %>
+										<a class="stu_lesion" href="<%= knowledge_listen_path(:account_id => @user_account.id, :pt_id => s_ptd['id'], :tgd_id => k['id'], :kt_id => _know1.id) %>"><img src="<%= GlobalSettings.image_domain %>2015112/images/asv_bok3.jpg" width="22" height="15" /></a>
+										<% end %>
+										<% if _know1.record %>
+										<div class="stu_noOk">制作中</div>
+										<% end %>
+									</li>
+								 <% 
+							 			end
+							 		end
+								 end 
+								 %>
+							 </ul>
+							 <div class="clear"></div>
+						 	</div>
+							<%
+										end
+									end
+								end
+							%>
+							<div class="clear"></div>
+							</div>
+							<% 
+									end
+								end
+							end 
+							%>
+							<div class="clear"></div>
+						</div>
+						<% end %>
+						<% end %>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+		<div class="clear"></div>
+    </div>
+	<div class="clear"></div>
+    </div>
+	<div class="clear"></div>
+</div>
+<div class="clear"></div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+<%= content_for :javascripts do -%>
+<script language="javascript">
+$(function() {
+    $(".stu_2t").click(function(){
+   	 if($(this).next(".stu_2con").css("display")=="none"){
+   	 $(".stu_2con").hide();$(this).next(".stu_2con").show();}else{
+   		 $(this).next(".stu_2con").hide();
+   	 }
+   	 });
+    $(".stu_4t").click(function(){
+   	 if($(this).next(".stu_4con").css("display")=="none"){
+   	 $(".stu_4con").hide();$(this).next(".stu_4con").show();/*$(".stu_4t").removeClass("stu_uImg");$(this).addClass("stu_uImg");*/}else{
+   		 /*$(".stu_4t").removeClass("stu_uImg");*/
+   		 $(this).next(".stu_4con").hide();
+   	 }
+   	 });
+    $(".stu_5t").click(function(){
+   	 if($(this).next(".stu_5con").css("display")=="none"){
+   	 $(".stu_5con").hide();$(this).next(".stu_5con").show();$(".stu_5t").removeClass("stu_uImg");$(this).addClass("stu_uImg");}else{
+   		 $(".stu_5t").removeClass("stu_uImg");
+   		 $(this).next(".stu_5con").hide();
+   	 }
+   });
+   <% 
+   learnSchedule = LearnSchedule.where(:user_id => @current_user.uid, :account_id => @user_account.id).first
+   if !learnSchedule.nil?
+   %>
+   if ($("#knowledge_id_<%= learnSchedule.knowledge_id %>").length > 0) {
+   		$("#knowledge_id_<%= learnSchedule.knowledge_id %>").prepend('<img class="stu_squer" src="<%= GlobalSettings.image_domain %>images/stu_img1.jpg" width="22" height="18" /><span class="stu_5s">上次听到<%= learnSchedule.knowledge_schedule[learnSchedule.knowledge_id] %><img src="<%= GlobalSettings.image_domain %>images/stu_sq2.jpg" width="7" height="11" /></span>');
+		var _p = $("#knowledge_id__"+$("#knowledge_id_<%= learnSchedule.knowledge_id %>").attr("p_id"));
+		_p.click();
+		$("#product_tree_" + _p.attr("p_id")).click();
+   }
+   <% end %>
+   
+});
+ 
+</script>	
+<% end -%>
+
+
+

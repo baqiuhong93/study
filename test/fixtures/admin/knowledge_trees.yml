@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  description: MyString
+  course_num: MyString
+  order_num: 1
+  listen_path: MyString
+  audition_path: MyString
+  product_tree: 
+
+two:
+  name: MyString
+  description: MyString
+  course_num: MyString
+  order_num: 1
+  listen_path: MyString
+  audition_path: MyString
+  product_tree: 

@@ -1,0 +1,23 @@
+<%= simple_form_for @classwork, :url => (@classwork.id.present? ? admin_classwork_path(@classwork) : admin_classworks_path), :html => { :class => 'form-horizontal' } do |f| %>
+    <%= f.input :name, :label => "名称：" %>
+    <%= f.input :demand, :label => "要求：", :as => :text, :input_html => { :class => "span8" } %>
+	<%= f.input :start_at, label: '开始时间：', as: 'string', input_html: { readonly: 'true', class: "Wdate", onfocus: "WdatePicker({dateFmt:'yyyy-MM-dd 00:00:00'})", value: format_date(@classwork.start_at)} %>
+	<%= f.input :end_at, label: '结束时间：', as: 'string', input_html: { readonly: 'true', class: "Wdate", onfocus: "WdatePicker({dateFmt:'yyyy-MM-dd 23:59:59'})", value: format_date(@classwork.end_at)} %>
+    <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to '取消', admin_classworks_path, :class => 'btn' %>
+  </div>
+<% end -%>
+
+<%= content_for :javascripts do -%>
+<%= javascript_include_tag "ckeditor" %>
+<script type="text/javascript" charset="utf-8" src="/module/my97/WdatePicker.js"></script>
+<script type="text/javascript" charset="utf-8">
+$(function() {
+	//CKEDITOR.replace( 'classwork_demand', {
+	//	height: 500,
+	//	toolbar: 'Full'
+	//});	
+});
+</script>
+<% end %>

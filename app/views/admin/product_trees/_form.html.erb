@@ -1,0 +1,54 @@
+<%= form_for @product_tree, :url => (@product_tree.id.present? ? admin_product_tree_path(@product_tree) : admin_product_trees_path), :html => { :class => 'form-horizontal', :id => 'product_tree_form', :multipart => true } do |f| %>
+	<%= f.hidden_field :pId %>
+
+	<input type="hidden" name="product_teachers_json" value='<%= @product_tree.speaker_teachers_string.html_safe %>' id="product_teachers_json">
+	<input type="hidden" name="jy_global_assets_json" value='<%= @product_tree.global_assets_string.html_safe %>' id="jy_global_assets_json">
+	<div class="control-group">
+		<%= f.label :name, "名称：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.text_field :name, :maxlength => 80 %>
+		</div>
+	</div>
+	<div class="control-group">
+		<%= f.label :name, "简介：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.text_area :description, :rows => 5, :maxlength => 255 %>
+		</div>
+	</div>
+	<div class="control-group">
+		<label for="product_teachers" class="control-label">老师：</label>
+		<div class="controls">
+		  <input type="text" id="product_teachers" class="span8">
+		</div>
+	</div>
+	<div class="control-group">
+		<label for="jy_global_assets" class="control-label">讲义：</label>
+		<div class="controls">
+		  <input type="text" id="jy_global_assets" class="span8">
+		</div>
+	</div>
+	<div class="control-group">
+		<%= f.label :name, "排序：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.select :order_num, 1..99 %>
+		</div>
+	</div>
+	<div class="control-group">
+		<%= f.label :name, "类型：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.select :node_type, [['目录', 0] ,['节点', 1]], :prompt => '请选择类型' %>
+		</div>
+	</div>
+	<div class="control-group">
+		<%= f.label :name, "试听地址：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.text_field :audition_path, :maxlength => 255 %>
+		</div>
+	</div>
+	<div class="control-group">
+		<%= f.label :record, "制作中：", :class => "control-label" %>
+		<div class="controls">
+		  <%= f.select :record, [['否', false] ,['是', true]] %>
+		</div>
+	</div>
+<% end -%> 

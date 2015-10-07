@@ -1,0 +1,10 @@
+<div class="mzh_l">
+ <div class="mzh_1t">消息中心</div>
+ <div class="mzh_menu">
+  <ul>
+   <li><a class="<%= request.fullpath.start_with?('/messages/system') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_messages_system_path %>">系统消息</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/messages/study') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_messages_study_path %>">学习提醒</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/messages/private') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_messages_private_path %>">私信</a></li>
+  </ul>
+ </div>
+</div>

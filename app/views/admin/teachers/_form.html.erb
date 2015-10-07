@@ -1,0 +1,106 @@
+<%= simple_form_for @teacher, :url => (@teacher.id.present? ? admin_teacher_path(@teacher) : admin_teachers_path), :html => { :class => 'form-horizontal', :multipart => true, :onsubmit => "return teacher_form_valid()" } do |f| %>
+	<%= f.input :name, label: '姓名：' %>
+	<%= f.input :code, label: '编码：', :placeholder => "数字、字母的组合" %>
+    <%= f.input :description, :label => '简介：', :as => :text, :input_html => { :rows => 5, :class => "span6" } %>
+	<div class="input checkbox optional" style="height:30px;padding-left:0px;"><label class="checkbox optional control-label" for="teacher_recommend" style="padding-left:0px;">附图：</label><input type="file" name="img_path_file" style="width:220px;height:30px;float:none;margin-left:0px;" id="img_path_file"></div>
+	<%= f.input :sortrank, label: '排序：', :collection => 1..99, as: 'select', :prompt => "请选择" %>
+	<%= f.input :recommend, :collection => [["推荐",1]], :prompt => "请选择", :label => "推荐：" %>
+	<div class="input checkbox optional" style="height:30px;padding-left:0px;"><label class="checkbox optional control-label" for="teacher_recommend" style="padding-left:0px;">无效：</label><%= f.check_box :deleted, :style => "width:220px;height:30px;float:none;margin-left:0px;" %></div>
+	<%= f.input :subject_first, :as => "hidden" %>
+	<%= f.input :subject_second, :as => "hidden" %>
+	<%= f.input :ttype, :as => "hidden" %>
+	<div class="input string optional">
+		<label class="string optional control-label"></label>		
+		<table border="0" cellspacing="5" cellpadding="5">
+			<tr>
+				<td><strong>分类：</strong></td>
+			</tr>
+			<tr>
+				<td>
+					<% Teacher.ttype_hash.each do |k,v| %>
+					<input type="checkbox" value="<%= k %>" id="t_ttype"><%= v %>
+					<% end %>
+				</td>
+			</tr>
+			<tr>
+				<td><strong>科目：</strong></td>
+			</tr>
+			<% Teacher.subject_first_array.each do |s| %>
+			<tr><th style="text-align:left;"><input type="checkbox" value="<%= s[:id] %>" id="t_subject_first" onclick="teacher_subject_first_click(this)"><%= s[:text] %></th></tr>
+			<tr id="t_subject_second_<%= s[:id] %>">
+				<td>
+				<% Teacher.subject_second_hash[s[:id]].each do |m| %>
+				<input type="checkbox" id="t_subject_second" value="<%= m[:id] %>" disabled="true" /><%= m[:text] %>
+				<% end unless Teacher.subject_second_hash[s[:id]].nil? %>
+				</td>
+			</tr>
+			<% end %>
+		</table>
+	</div>
+    <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to '取消', admin_teachers_path, :class => 'btn' %>
+  </div>
+<% end -%>
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function teacher_subject_first_click(o) {
+	if(o.checked) {
+		$("#t_subject_second_" + o.value + " input[id=t_subject_second]").each(function() {
+			this.disabled = false;
+		});
+	} else {
+		$("#t_subject_second_" + o.value + " input[id=t_subject_second]").each(function() {
+			this.disabled = true;
+			this.checked = false;
+		});
+	}
+}
+
+function teacher_form_valid() {
+	var teacher_ttype_array = [];
+	var teacher_subject_first_array = [];
+	var teacher_subject_second_array = [];
+	
+	$("input[id=t_ttype]:checked").each(function() {
+		teacher_ttype_array.push(this.value);
+	});
+	$("input[id=t_subject_first]:checked").each(function() {
+		teacher_subject_first_array.push(this.value);
+	});
+	$("input[id=t_subject_second]:checked").each(function() {
+		teacher_subject_second_array.push(this.value);
+	});
+	$("#teacher_ttype").val(JSON.stringify(teacher_ttype_array));
+	$("#teacher_subject_first").val(JSON.stringify(teacher_subject_first_array));
+	$("#teacher_subject_second").val(JSON.stringify(teacher_subject_second_array));
+	return true;
+}
+
+$(function() {
+	var teacher_ttype_val = $("#teacher_ttype").val();
+	var teacher_subject_first_val = $("#teacher_subject_first").val();
+	var teacher_subject_first_array = JSON.parse(teacher_subject_first_val == '' ? '[]' : teacher_subject_first_val);
+	var teacher_subject_second_val = $("#teacher_subject_second").val();
+	var teacher_subject_second_array = JSON.parse(teacher_subject_second_val == '' ? '[]' : teacher_subject_second_val);
+	$("input[id=t_ttype]").each(function() {
+		if(teacher_ttype_val.indexOf(this.value) != -1) {
+			this.checked = true;
+		}
+	});
+	
+	$("input[id=t_subject_first]").each(function() {
+		if(teacher_subject_first_array.indexOf(this.value) != -1) {
+			this.checked = true;
+			teacher_subject_first_click(this);
+		}
+	});
+	
+	$("input[id=t_subject_second]").each(function() {
+		if(teacher_subject_second_array.indexOf(this.value) != -1) {
+			this.checked = true;
+		}
+	});
+})
+</script>
+<% end -%>

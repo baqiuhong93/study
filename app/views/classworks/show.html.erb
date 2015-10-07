@@ -1,0 +1,65 @@
+<% @_page_title =   "我的作业" %>
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+  <span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 我的作业 >> <%= @classwork.name %></span>
+</div>
+<div class="wg_sfTuShu mt10 whHd960">
+<div class="wg_aboutBox">
+<%= render "public/left_nav2" %>
+<div class="wg_aboutBoxR wg_aboutBoxRHd bd">
+                    <div class="hy_MyKcTab">
+                    	<table border="0" width="100%">
+                    		<tr>
+                    			<td>作业要求：</td>
+                    			<td><%= @classwork.demand %></td>
+                    		</tr>
+                    		<tr>
+                    			<td>我的作业：</td>
+                    			<td><%= @user_classwork.answer_text %></td>
+                    		</tr>
+                    		<% if !@user_classwork.answer_file.empty? %>
+                    		<tr>
+                    			<td>上传附件：</td>
+                    			<td><a href="<%= GlobalSettings.upload_view_url + @user_classwork.answer_file %>" target="_blank">下载</a></td>
+                    		</tr>
+                    		<% end %>
+                    		<tr>
+                    			<td>回复：</td>
+                    			<td><%= @user_classwork.reply_text %></td>
+                    		</tr>
+                    		<% if !@user_classwork.reply_file.empty? %>
+                    		<tr>
+                    			<td>回复附件：</td>
+                    			<td><a href="<%= GlobalSettings.upload_view_url + @user_classwork.reply_file %>" target="_blank">下载</a></td>
+                    		</tr>
+                    		<% end %>
+                    	</table>
+                    </div>
+                </div>
+ </div>
+</div>
+
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function valid_classwork_form() {
+	var suffixs = ["zip", "rar", "docx"]
+	var _answer_text = $.trim($("#user_classwork_answer_text").val());
+	if (_answer_text == '') {
+		alert("我的作业内容不能为空!");
+		return false;
+	}
+	var _answer_file = $("#answer_file").val();
+	var _suffix = _answer_file.substr(_answer_file.lastIndexOf(".")+1).toLowerCase();
+	if (_suffix != '' && suffixs.indexOf(_suffix) == -1) {
+		alert("附件格式不正确!");
+		return false;
+	}
+	return true;
+}
+</script>	
+<% end -%>
+

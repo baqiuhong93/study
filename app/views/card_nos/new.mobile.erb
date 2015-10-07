@@ -1,0 +1,103 @@
+ 
+ <div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            学习卡注册
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> 学习卡注册
+    </h3>
+    <br />
+    <%= form_for @card_no, :html => {:method => :post, :onsubmit => "return valid_card_no_form();"} do |f| -%>
+    <% flash.each do |name, msg| %>
+          <%= content_tag :p, msg, :class => "cor_red" if msg.is_a?(String) %>
+    <% end %>
+    <p class="hp_input_p">
+        <span class="s1">姓名：</span>
+        <input type="text" name="full_name" id="full_name" class="s1" placeholder="请输入您的姓名" value="<%= @current_user.full_name %>">
+        <br />
+    </p>
+    <p class="hp_input_p">
+        <span class="s1">手机：</span>
+        <input type="text" name="mobile_phone" id="mobile_phone" class="s1" placeholder="请输入您的手机" value="<%= @current_user.mobile_phone %>">
+        <br />
+    </p>
+    <p class="hp_input_p">
+        <span class="s1">卡号：</span>
+        <%= f.text_field :code, :placeholder => "请输入您的卡号", :class => "s1" %>
+        <br />
+    </p>
+    <p class="hp_input_p">
+        <span class="s1">密码：</span>
+        <%= f.password_field :passwd, :placeholder => "请输入您的密码", :class => "s1" %>
+        <br />
+    </p>
+    <!--
+    <p class="hp_input_p">
+        <span class="s1">验证码：</span>
+        <%= text_field_tag :captcha, nil, :maxlength => 6, :class => "s2" %>
+        <span>
+        <%= captcha_tag :class => "mcz_coder", :width => 80, :height => 25 %>
+        </span>
+        <br />
+    </p>
+    -->
+    <br />
+    <%= f.submit "立即注册", :class => "rega1" %>
+<% end -%>
+   <br /><br />
+     <br />
+      <h3 class="hp_grh3 topborder">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+     <%=cms_part_page("589") %>
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function valid_card_no_form() {
+    if ($("#full_name").val() == "") {
+        alert("姓名不能为空!");
+        $("#full_name").focus();
+        return false;
+    }
+    
+    if ($("#mobile_phone").val() == "") {
+        alert("手机不能为空!");
+        $("#mobile_phone").focus();
+        return false;
+    }
+    
+    if ($("#card_no_code").val() == "") {
+        alert("卡号不能为空!");
+        $("#card_no_code").focus();
+        return false;
+    }
+    if ($("#card_no_passwd").val() == "") {
+        alert("密码不能为空!");
+        $("#card_no_passwd").focus();
+        return false;
+    }
+    /**
+    if ($("#captcha").val() == "") {
+        alert("验证码不能为空!");
+        $("#captcha").focus();
+        return false;
+    }
+    if ($("#captcha").val().length != 6) {
+        alert("验证码不正确!");
+        $("#captcha").focus();
+        return false;
+    }
+    **/
+    return true;
+}
+</script>   
+<% end -%>

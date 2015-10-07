@@ -1,0 +1,19 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>用户名:</strong></td>
+		<td><%= @note.user_name %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>产品名称:</strong></td>
+		<td><%= @note.product_name %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>知识点名称:</strong></td>
+		<td><%= @note.knowledge_tree_name %></td>
+	</tr>
+		<tr>
+		<td width="15%" style="text-align:right;"><strong>内容:</strong></td>
+		<td><%= @note.content %></td>
+	</tr>
+</table>

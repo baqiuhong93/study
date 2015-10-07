@@ -1,0 +1,65 @@
+<div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            学习卡注册
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> <a href="<%= new_card_no_path %>">学习卡注册</a>>课程选择
+    </h3>
+    <h3 class="news_map3">
+        *<span><%= @card.product_array.length %></span>个产品选<span><%= @card.select_num %></span>,必选产品<span><%= @card.must_num %></span>
+    </h3>
+    <br />
+    <%= form_for @card_no, :html => {:id => "card_product_select", :onsubmit => "return valid_card_product_select_form()"} do |f| -%>
+    <%= hidden_field_tag :used_card_no_id, params[:used_card_no_id] %>
+    <div class="classlist5">
+        <ul> 
+    <% @card.product_array.each do |product| %>
+            <li>
+                <input id="product_ids" name="product_ids[]" type="checkbox" value="<%= product['id'] %>" />&nbsp;<%= product["text"] %></li>
+    <% end %>
+
+        </ul>
+    </div>
+    <br />
+    <%= f.submit "立即提交", :class => "rega1", :id => "select_product_btn" %>
+    <% end %>
+    <br />
+    <br />
+    <br />
+    <h3 class="hp_grh3 topborder">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <%=cms_part_page("589") %>
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function valid_card_product_select_form() {
+    if ($("[name='product_ids[]']:checked").length > <%= @card.select_num %>) {
+        alert("选择产品数量大于<%= @card.select_num %>！");
+        return false;
+    }
+    if ($("[name='product_ids[]']:checked").length != <%= @card.select_num %>) {
+        alert("请选择产品！");
+        return false;
+    }
+    return true;
+}
+$(function() {
+    $("[name='product_ids[]']").each(function(index) {
+        if(index < <%= @card.must_num %>) {
+            this.checked = true;
+            this.disabled = true;
+        }
+    });
+});
+</script>
+<% end -%>

@@ -1,0 +1,19 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;">接收用户：</td>
+		<td><%= @system_message.user_id == 0 ? "所有用户" : @system_message.user_name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;">创建时间：</td>
+		<td><%= format_date(@system_message.created_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;">管理员用户名：</td>
+		<td><%= @system_message.admin_user_name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;">消息：</td>
+		<td><%= @system_message.content %></td>
+	</tr>
+</table>

@@ -1,0 +1,46 @@
+<% @_page_title =   "我的课堂笔记" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+ <div class="whHd960 mt10">
+ <span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> <a href="<%= user_notes_path %>">笔记列表</a> >> <%= @user_account.product_name %></span>
+ </div>
+<div class="whHd960 mt10">
+<%= render "public/left_nav2" %>
+<div class="minR">
+          <div class="minR_bgwt bd">
+              <div class="ttBox3"><b class="icon1">我的课堂笔记</b></div> 
+              <div class="wgListPd">
+                  <div class="wgListPdTT wgListPdTTnone bd"><b><%= @user_account.product_name %></b><a href="<%= accounts_show_path(:id => @user_account.id) %>"><img src="<%= GlobalSettings.image_domain %>2015112/images/btn8.jpg" width="79" height="27" /></a></div>
+                    <div class="gl_rightTab1_1 gl_rightTab1_2">
+                    <table width="100%">
+                      <% if @notes.empty? %>
+                        <tr>
+                          <td style="text-align:center" colspan="4">暂无记录</td>
+                        </tr>
+                      <% end %>
+                      <% @notes.each do |note| %>
+                        <tr>
+                            <td align="center" class="cl1" width="110"><%= note.knowledge_tree_name %></td>
+                            <td width="320">
+                              <div class="gl_rightTabDiv">
+                                    <%= note.content %>
+                                </div>
+                            </td>
+                            <td width="146" align="center"><%= format_date(note.created_at) %></td>
+                            <td align="center"><a href="<%= user_notes_down_path(:id => note.id) %>" class="linke1">下载</a><%= link_to '删除', user_notes_destroy_path(:id => note.id), :class => "linke2", :method => :delete, :data => { :confirm => "确认删除笔记?" } %></td>
+                        </tr>
+                        <% end %>
+                    </table>
+        </div>
+                </div>
+                <div class="clear"></div>
+                <%= will_paginate @notes, :class => "mpage", :renderer => BootstrapPagination::Rails %>
+            </div>
+          
+        </div>
+<div class="clear"></div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->

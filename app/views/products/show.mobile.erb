@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>产品详情页面</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"
+        name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta content="email=no" name="format-detection" />
+    <link rel="Stylesheet" type="text/css" href="<%= GlobalSettings.css_domain %>mobTheme/StyleSheet.css" />
+     <script type="text/javascript" src="<%= GlobalSettings.js_domain %>js/jquery-1.7.1.min.js"></script>
+     <script type="text/javascript">
+         $(document).ready(function () {
+
+             $("#stafooter_toolsa").click(function () {
+                 $(".jumpdiv").slideToggle("fast", function () {
+                     if ($(".jumpdiv").is(":visible")) {
+                         $("#stafooter_toolsa").html("收起");
+                     }
+                     else {
+                         $("#stafooter_toolsa").html("更多");
+
+                     }
+                 });
+
+
+             });
+         });
+      
+    </script>
+</head>
+<body>
+    <div class="newstop">
+        <a href="http://m.xredu.com/"></a>
+        <p>
+            课程详情
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <div class="pro_list2">
+        <ul>
+            <li class="nobor">
+                <h2>
+                    产品名称：<%= @product.name %>
+                </h2>
+                <div class="pro_list2_left" style=" width:100%;">
+                    <p>
+                        原价：<b>￥<%= format_money(@product.origin_price) %>元</b>
+                    </p>
+                    <p>
+                        优惠价：<span>￥<%= format_money(@product.sale_price) %></span>元
+                    </p>
+                    <p>
+                        说明:<%= @product.description %>
+						(
+							<% if @product.skxx_id == 1 %>面授
+							<% elsif @product.skxx_id == 2 %>网校
+							<% elsif @product.skxx_id == 3 %>教材
+							<% end %>
+						)
+                    </p>
+                    <p>
+                        <% if @product.effect_type == 1 %>
+                        有效期：<%= @product.effect_str %>
+                        <% elsif @product.effect_type == 2 %>
+                        有效天数：<%= @product.effect_str %>
+                        <% end %>
+                    </p>
+                </div> <div class="clear"></div>
+            </li>
+            <div class="clear"></div>
+        </ul>
+        <p class="buytools">
+        <% if @product.effective? %>
+            <a id="xredu" href="<%= GlobalSettings.app_url + add_cart_index_path(:id => @product.id) %>">立即购买</a>
+        <% else %>
+            <a id="xredu" href="javascript:void(0)" onclick="alert('产品状态无效或产品已过期!');">立即购买</a>
+        <% end %>
+       
+        </p>
+         <div class="clear"></div>
+    </div>
+    <h2 class="news_video_tt">
+        <span>课程特色</span>
+    </h2>
+    <div class="news_con" style="color: #666666;">
+        <%=@product.mobile_description.html_safe %>
+    </div>
+    <h3 class="hp_grh3">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <!--GA产品信息开始-->
+    <script>
+	var productAnalytics = {'id':'<%= @product.id %>','name': '<%= @product.name %>','price':'<%= format_money(@product.sale_price) %>','category': '<%= @product.skxx_id %>'==1?'面授':'<%= @product.skxx_id %>'==2?'网校':'<%= @product.skxx_id %>'==3?'教材':'未分类','brand': '欣瑞教育','variant':'<%= @product.effect_str %>' + '_' + '<%= @product.description %>','position': 1};
+	var productState = <%= @product.effective? %>;
+    </script>
+	<!--GA产品信息结束-->
+    <%=cms_part_page("592") %>
+</body>
+</html>

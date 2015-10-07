@@ -1,0 +1,48 @@
+<% @_page_title =   "未使用知识点" %>
+<%= content_for :stylesheets do -%>
+<link href="<%= GlobalSettings.css_domain %>css/pointlist.css" rel="stylesheet" type="text/css" />	
+<% end -%>
+
+<div id="main">
+	<%= render "public/left_nav" %>
+    <div class="content">
+    	<p id="location">您现在的位置：欣瑞教育 &gt; 知识点列表</p>
+        <div class="pointList">
+        	<h3 class="tit_3">知识点列表</h3>
+            <ul>
+            	<li>课程：<%= @product_tree.name %></li>
+            	<li>时间：<%= @product_tree_group.knowledges_course_sum(params[:pt_id]) %></li>
+				<% if !@product_tree.speaker_teachers.empty? %>
+            	<li>老师：
+					<% @product_tree.speaker_teachers.each do |speaker_teacher| %>
+					<%= speaker_teacher.teacher_name %>
+					<% end %>
+				</li>
+				<% end %>
+            </ul>
+        </div>
+        <div class="spoken" id="knowledge_tree">
+            
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+<% 
+@knowledge_trees.each do |kt|
+	knowledge_tree = KnowledgeTree.find_from_cache(kt)
+	if !knowledge_tree.nil?
+%>
+		if($("#knowledge_tree_<%= knowledge_tree.pId %>").length > 0) {
+		    $("#knowledge_tree_<%= knowledge_tree.pId %>").append("<li><a href='<%= knowledge_listen_path(:account_id => @user_account.id, :pt_id => params[:pt_id], :tgd_id => params[:tgd_id], :kt_id => knowledge_tree.id) %>' title=''><%= knowledge_tree.name %></a></li>");
+		} else {
+			$("#knowledge_tree").append("<ul id='knowledge_tree_<%= knowledge_tree.id %>'><h4><%= knowledge_tree.name %></h4></ul>");
+		}
+<%
+	end
+end unless @knowledge_trees.nil?
+%>
+</script>	
+<% end -%>
+

@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user: 
+  user_name: MyString
+  amount: 
+  pay_type: 1
+  status: 1
+  order: 
+  order_code: MyString
+  record_type: 1
+
+two:
+  user: 
+  user_name: MyString
+  amount: 
+  pay_type: 1
+  status: 1
+  order: 
+  order_code: MyString
+  record_type: 1

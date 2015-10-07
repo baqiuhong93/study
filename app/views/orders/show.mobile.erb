@@ -1,0 +1,116 @@
+   <div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            订单详情
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+     <h3 class="news_h3">
+        <a href="tel:4006202002">咨询热线：400-620-2002</a>
+    </h3>
+    <h3 class="news_map">
+        <a href="http://my.xredu.com">我的课堂</a>> <a href="<%=orders_path %>">订单列表</a>><%= @order.code %>
+    </h3>
+
+      <div class="my_class_card_con">
+        <ul>
+            <li class="nobotboder">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="tttd3">
+                            课程名称：
+                        </td>
+                        <td class="tttd2" colspan="3">
+                            <% @order.order_items.each do |item| %>
+                            <%= item.product_name %><br>
+                            <% end %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            订单金额：
+                        </td>
+                        <td>
+                            <span>￥<%= format_money(@order.balance_amount+@order.total_amount) %></span>
+                        </td>
+                        <td class="tttd3">
+                            下单时间：
+                        </td>
+                        <td>
+                            <%= format_date(@order.created_at) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            支付方式：
+                        </td>
+                        <td>
+                            <%= @order.pay_type_text %>
+                        </td>
+                        <td class="tttd3">
+                            状态：
+                        </td>
+                        <td>
+                            <font style=" color:#009900;"><%= Order.status_hash[@order.status] %></font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            订单号：
+                        </td>
+                        <td>
+                            <%= @order.code %>
+                        </td>
+                        <td></td><td></td>
+                    </tr>
+                    <tr>
+                    <td class="tttd3">
+                            总金额：
+                        </td>
+                        <td colspan="3">
+                        余额已支付<span>￥<%= format_money(@order.balance_amount) %></span>元
+                        <span>+</span>
+                        待支付
+                        <span>￥<%= format_money(@order.total_amount) %></span>元
+                        </td>
+                    </tr>
+                </table>
+            </li>
+            </ul></div>
+
+
+    <br />
+
+<% if @order.yinhanghuikuan? %>
+<div class="mcar_yhList3">
+     <ul>
+      <li>
+        <strong>开户行：</strong>广发银行北京航天桥支行<br />
+        <strong>户名：</strong>北京欣瑞文化发展有限公司<br />
+        <strong>卡号：</strong>1370 7151 6010 0146 62
+      </li>
+      </ul>
+     <div class="clear"></div>
+    </div>
+    <div class="mcar_txt1">  <strong>友情提示：</strong>部分地区银行汇款需要出示身份证，汇款完毕后可以通过以下方式确认到款。电话确认：400-620-2002（告知您的订单号、汇款银行、汇款金额和联系方式）。<br />
+    <span class="cor_red">注：到款后24小时内开通课程。</span>
+    </div>
+<% end %>
+<% if @order.weifukuan? && (@order.zhifubao? || @order.kuaiqian?) %>
+<div class="mcar_zf">
+    <form action="<%= pay_order_path(:id => @order.code) %>" method="get" accept-charset="utf-8" target="_system_pay">
+    <input class="rega1 rega2" value="支付" name="" type="submit" />
+    </form>
+</div>
+<% end %>
+    <br /><br />
+
+
+    <h3 class="hp_grh3 topborder">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <%=cms_part_page("589") %>

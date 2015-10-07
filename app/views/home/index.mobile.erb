@@ -1,0 +1,143 @@
+
+    <div class="newstop">
+        <a href="http://my.xredu.com"></a>
+        <p>
+            个人中心
+        </p>
+        <div class="clear">
+        </div>
+    </div>
+    <div class="account_infotop">
+        <img alt="" src="<%= image_clip_path(@current_user.avatar_path, '82', GlobalSettings.image_domain+'2015112/images/fanc.jpg') %>" />
+        <div class="account_infotop_right">
+            <p><%=@current_user.name %></p>
+            <p>
+                <a href="<%= user_profile_path %>">完善信息</a> <a href="<%= user_password_path %>" class="yel">修改密码</a>
+            </p>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+    <br />
+    <h2 class="my_classh2 bottompborder">
+        <span class="card">学习卡注册</span> <a href="<%= new_card_no_path %>">注册></a>
+        <div class="clear">
+        </div>
+    </h2>
+    <br />
+    <h2 class="my_classh2 bottompborder">
+        <span>我的课堂</span> <a href="<%=accounts_index_path %>" class="red">进入></a>
+        <div class="clear">
+        </div>
+    </h2>
+    <br />
+    <h2 class="my_classh2 bottompborder">
+        <span class="pop">我的账户:<b>￥<%= format_money(@current_user.now_balance) %></b></span> <a href="<%= user_money_records_path %>" class="blue">进入></a>
+        <div class="clear">
+        </div>
+    </h2>
+    <br />
+    <% orders = Order.where("user_id = ?", @current_user.id).order("id desc").limit(10) %>
+    <h2 class="my_classh2 ">
+        <span class="cart">我的订单:<b><%= Order.where("user_id = ?", @current_user.id).count %></b>件</span>
+        <div class="clear">
+        </div>
+    </h2>
+    <div class="my_class_card_tt">
+        <span>订单列表</span>
+    </div>
+    <div class="my_class_card_con">
+        <ul>
+            <% 
+            orders.each do |order|
+            %>
+            <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td class="tttd3">
+                            产品名称：
+                        </td>
+                        <td class="tttd2" colspan="3">
+                            <% order.order_items.each do |item| %>
+                              <%= item.product_name %><br> 
+                            <% end %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            订单金额：
+                        </td>
+                        <td>
+                            <span>￥<%= format_money(order.total_amount) %></span>
+                        </td>
+                        <td class="tttd3">
+                            下单时间：
+                        </td>
+                        <td>
+                            <%= format_date(order.created_at) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            支付方式：
+                        </td>
+                        <td>
+                            <%= order.pay_type_text %>
+                        </td>
+                        <td class="tttd3">
+                            状态：
+                        </td>
+                        <td>
+                            <font><%= Order.status_hash[order.status] %></font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tttd3">
+                            订单号：
+                        </td>
+                        <td>
+                            <%= order.code %>
+                        </td>
+                        <td colspan="2">
+                            <a class="gary" href="<%= order_path(:id => order.code) %>" title="查看">查看</a>
+                              <% if order.weifukuan? %>
+                                <%= link_to '取消',
+                                            order_path(:id => order.code),
+                                            :method => :delete, :class => "cl2",
+                                            :data => { :confirm => "确认取消订单(#{order.code})?" } %>
+                              <% end %>
+                              </div>
+                              <% if order.weifukuan? && (order.zhifubao? || order.kuaiqian?) %>
+                              <a class="cl3" href="<%= pay_order_path(:id => order.code) %>" title="付款" target="_system_pay">
+                              付款</a>
+                              <% end %>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+            <% end %>
+            <% if orders.empty? %>
+            <li>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td colspan="2" style="text-align:center;">暂无记录</td>
+                    </tr>
+                </table>
+            </li>
+            <% end %>
+        </ul>
+        <br />
+        <div class="clear">
+        </div>
+    </div>
+    <% if !orders.empty? && orders.length == 10 %>
+    <a class="upa bottompborder" href="<%= orders_path %>">点击查看更多<img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/promorea.png" />
+    <% end %>
+    </a><br />
+    <h3 class="hp_grh3">
+        热门活动
+    </h3>
+    <a href="http://product.xredu.com/" class="hp_botad">
+        <img alt="" src="<%=GlobalSettings.image_domain %>/mobTheme/images/hp_ad4.gif" />
+    </a>
+    <%=cms_part_page("589") %>

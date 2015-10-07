@@ -1,0 +1,243 @@
+<% @_page_title =   "确认订单信息" %>
+<%= render "public/header" %>
+<script type="text/javascript">
+var cartItems = [];
+<% CartCookieUtil.get_cart(session, cookies).cartItem.each do |k,v| %>
+cartItems.push({
+	'id': '<%= v.id %>',
+	'name': '<%= v.name %>',
+	'category': '<%= Product.find(v.id).skxx_id %>'==1?'面授':'<%= Product.find(v.id).skxx_id %>'==2?'网校':'<%= Product.find(v.id).skxx_id %>'==3?'教材':'未分类',
+  	'brand': '欣瑞教育',
+  	'variant': '<%= Product.find(v.id).effect_str %>' + '_' + '<%= Product.find(v.id).description %>',
+  	'price': '<%= format_money(v.sale_price) %>',
+  	'quantity': 1
+});
+<% end %>
+</script>
+<div class="min whHd960 mt10">
+	<div class="minBg"><img src="<%= GlobalSettings.image_domain %>2015112/images/guwc1_2.jpg" width="960" height="47" /> </div>
+	 <div class="wg_gxBox mt10 bd">
+        <div class="wg_gxBoxT"><b>个人信息</b><span class="mcar_2s">请您准确填写个人信息，方便为您进行后续服务！</span></div>
+        <div class="wg_gxBoxLi1_1">
+            <%= form_for @current_user, :url => update_user_profile_path(:format => :json), :method => :post, :html => { :id => "grxxForm" } do |f| -%>
+             <ul>
+              <li><span><%= f.label :full_name, "姓名：" %></span><%= f.text_field :full_name, :max_length => 20, :class => "mcar_int2" %><strong class="cor_red">*</strong></li>
+              <li><span><%= f.label :mobile_phone, "手机：" %></span><%= f.text_field :mobile_phone, :class => "mcar_int2", :maxlength => 11 %><strong class="cor_red">*</strong></li>
+              <li><span><%= f.label :email, "邮箱：" %></span><%= f.text_field :email, :class => "mcar_int2", :maxlength => 255 %><strong class="cor_red">*</strong></li>
+              <li><span><%= f.label :address, "地址：" %></span><%= f.text_field :address, :class => "mcar_int2", :maxlength => 255 %><strong class="cor_red">*</strong></li>
+             </ul>
+            <% end %>
+            <div class="clear"></div>
+        </div>
+    </div>
+<!--保存后个人信息-->
+<!--End-->
+<div class="wg_gxBox mt10 bd">
+ <div class="wg_gxBoxT"><b>确认订单信息</b></div>
+  <div class="minBoxTab minBoxTab1_1 mt10" id="TabBox">
+   <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr class="mcar_th2">
+      <th align="center">课程名称</th>
+      <th align="center">价格</th>
+      <th align="center">优惠金额</th>
+      <th align="center">小计</th>
+    </tr>
+  <% CartCookieUtil.get_cart(session, cookies).cartItem.each do |k,v| %>
+    <tr>
+      <td align="left"><a href="<%= product_path_domain(k) %>" title="<%= v.name %>" target="_blank"><%= v.name %></a></td>
+      <td align="center">￥<%= format_money(v.sale_price) %></td>
+      <td align="center">￥0.00</td>
+      <td align="center"><span class="cor_qh">￥<%= format_money(v.sale_price_mul_num) %></span></td>
+    </tr>
+  <% end %>
+  </table>
+  </div>
+  <div class="mcar_relt mcar_reltmb10"><strong class="fl">优惠合计</strong><div class="fr">订单总金额：<span class="cor_red">￥<%= format_money(CartCookieUtil.get_cart(session, cookies).get_amount) %></span>元</div></div>
+</div>
+<div class="wg_gxBox mt10 bd">
+<div class="wg_gxBoxT"><b>支付方式</b></div>
+<div class="mcar_relt">
+	账户余额为：￥<span id="_user_balance"><%= format_money(@current_user.now_balance) %></span>
+	<% if @current_user.now_balance > 0 %>
+	<input type="checkbox" value="1" id="use_balance" onclick="use_user_balance(this)">
+	<% end %>
+	<span id="_user_balance_msg" style="color:#f00;"></span>
+	<a target="_blank" href="http://my.xredu.com/recharges/index" class="pubBtn1">(立即充值)</a>
+</div>
+<!--付款方式点击切换效果-->
+<%= form_for @order, :url => cart_index_path, :html => { :id => "new_order_form" } do |f| -%>
+<%= f.hidden_field :pay_type %>
+<%= f.hidden_field :balance_amount %>
+<div class="clickTag mcar_chg1">
+  <div class="chgBtnList chgBtnListNone">
+   <ul>
+    <li class="chgBtn chgCutBtn"><a href="javascript:void(0)" title="网银支付" pay_type="10">网银支付</a></li>
+    <li class="chgBtn"><a href="javascript:void(0)" title="银行汇款" pay_type="20">银行汇款</a></li>
+  </ul>
+  </div>
+  <div class="chgConList wg_gxBoxPd">
+    <div class="chgCon">
+     <div class="mcar_webCon">
+     <div class="wg_gxBoxT1_1">网银直接支付：<span>由支付宝提供接口，确保您的资金安全</span></div>
+     <div class="wg_gxBoxLi1_6">
+      <ul>
+	   <% Order.pay_code_hash.each do |k,v| %>
+	   	<% if k != "directPay" %>
+       <li>
+		 <span><%= f.radio_button :pay_code, k, :class => "mcar_rad2" %></span>
+         <img src="<%= GlobalSettings.image_domain %>images/<%= k %>.jpg" width="126" height="36" />
+       </li>
+	   	<% end %>
+	   <% end %>
+      </ul>
+      <div class="clear"></div>
+     </div>
+     <div class="wg_gxBoxT1_1"><strong>如果您使用其他银行卡支付，请：</strong></div>
+     <div class="mcar_t2"><span class="fl"><%= f.radio_button :pay_code, "directPay" %><strong>支付宝支付</strong><span class="cor_bs">（支付宝支持国内各大银行，快速完成支付）</span></span><span class="fr">支付流程介绍  客服电话：0571-88156688</span></div>
+     </div>
+    </div>
+    <div class="chgCon hidden">
+    <div class="mcar_yhList3">
+     <ul>
+      <li>
+        <strong>开户行：</strong>广发银行北京航天桥支行<br />
+        <strong>户名：</strong>北京欣瑞文化发展有限公司<br />
+		<strong>账号：</strong>1370 7151 6010 0146 62 
+      </li>
+     </ul>
+     <div class="clear"></div>
+    </div>
+    <div class="mcar_txt1"> 
+    <strong>友情提示：</strong>部分地区银行汇款需要出示身份证，汇款完毕后可以通过以下方式确认到款。电话确认：400-620-2002（告知您的订单号、汇款银行、汇款金额和联系方式）。<br />
+    <span class="cor_red">注：到款后24小时内开通课程。</span>
+    </div>
+    </div>
+  </div>
+</div>
+<!--End-->
+<div class="mcar_zf mcar_zf1_2">
+<input class="mcz_submit" value="" name="" type="button" onclick="submit_order_form();" />
+</div>
+</div>
+<div class="clear"></div>
+<% end %>
+</div>
+<%= cms_part_page("594") %>
+<%= content_for :javascripts do -%>
+<script type="text/javascript">
+function invoice_click() {
+	if ($("input[name=invoice_name_r]:checked").val() == "1") {
+		$("#order_invoice_name").attr("disabled", false);
+	} else {
+		$("#order_invoice_name").val('');
+		$("#order_invoice_name").attr("disabled", true);
+	}
+}
+
+function use_user_balance(obj) {
+	var _order_amount = <%= format_money(CartCookieUtil.get_cart(session, cookies).get_amount) %>;
+	var _user_balance = <%= format_money(@current_user.now_balance) %>;
+	if(obj && obj.checked) {
+		if (_user_balance > _order_amount) {
+			$('#order_balance_amount').val(_order_amount);
+			$("#_user_balance").text((_user_balance-_order_amount).toFixed(2));
+			$("#_net_pay").hide();
+		} else if(_user_balance == _order_amount) {
+			$('#order_balance_amount').val(_order_amount);
+			$("#_user_balance").text((_user_balance-_order_amount).toFixed(2));
+			$("#_net_pay").hide();
+		} else {
+			$('#order_balance_amount').val(_user_balance.toFixed(2));
+			$("#_user_balance").text("0.00");
+			$("#_user_balance_msg").text("还需支付"+(_order_amount-_user_balance).toFixed(2)+"元");
+		}
+	} else {
+		$('#order_balance_amount').val('0.00');
+		$("#_user_balance").text(_user_balance.toFixed(2));
+		$("#_user_balance_msg").text("");
+		$("#_net_pay").show();
+	}
+}
+
+function submit_order_form() {
+	
+	if ($("#user_full_name").val() == '') {
+		alert("姓名不能为空!");
+		$("#user_full_name").focus();
+		return;
+	}
+	
+	if ($("#user_mobile_phone").val() == '') {
+		alert("手机不能为空!");
+		$("#user_mobile_phone").focus();
+		return;
+	}
+	if ($("#user_address").val() == '') {
+		alert("地址不能为空!");
+		$("#user_address").focus();
+		return;
+	}
+	if ($("#user_email").val() == '') {
+		alert("邮箱不能为空!");
+		$("#user_email").focus();
+		return;
+	}
+	
+	$.post($("#grxxForm").attr("action"), $("#grxxForm").serialize(), function(data) {
+		if (data.status == "success") {
+			$("#new_order_form").submit();
+		} else {
+			alert(data.msg);
+		}
+	});
+}
+
+$(function() {
+	<% if @order.invoice_name.blank? %>
+	//$("input[name=invoice_name_r][value=0]").attr("checked",true);
+	<% else %>
+	//$("input[name=invoice_name_r][value=1]").attr("checked",true);
+	<% end %>
+	//invoice_click();
+	use_user_balance($("#use_balance").get(0));
+	$(".chgBtnList > ul > li > a").each(function(i) {
+		$(this).attr("index", i);
+		$(this).click(function() {
+			var _index = $(this).attr("index");
+			var _this_a = this;
+			$("#order_pay_type").val($(this).attr("pay_type"));
+			$(".chgConList > div").each(function(j) {
+				if(_index == j) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+				
+				$(".chgBtnList > ul > li").each(function(k) {
+					if(_index == k) {
+						$(this).addClass('chgCutBtn');
+					} else {
+						$(this).removeClass('chgCutBtn');
+					}
+				});
+			});
+		});
+		if($(this).attr("pay_type") == "<%= @order.pay_type %>") {
+			$(this).click();
+		}
+	});
+});
+
+/*<!--ga分析开始-->
+ga('require', 'ec', 'ec.js');
+<% @order.order_items.each do |item| %>
+ga('ec:addProduct',{'id': '<%= item.product_id %>','name': '<%= item.product_name %>','price': '<%= format_money(item.sale_price) %>','quantity': 1});
+<% end %>
+ga('ec:setAction', 'checkout', {
+	'step': 3,
+	'option':'PC'
+	});
+ga('send', 'event', 'Ecommerce','Checkout', 'Step_3-PC');    // 与基础代码不同因此页面还有一个基础代码
+<!--ga分析结束-->*/
+</script>	
+<% end -%>

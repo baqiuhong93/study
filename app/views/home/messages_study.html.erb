@@ -1,0 +1,59 @@
+<% @_page_title =   "我的学习提醒" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+	<span class="fl">您当前的位置： <a href="<%= root_path %>">消息中心</a> >> 学习提醒</span>
+</div>
+<div class="min whHd960 mt10">
+<%= render "public/left_nav2" %>
+ <div class="mzhr_con mt10">
+ <div class="mzhr_1t">学习提醒</div>
+  <div class="asv_con2">
+    <ul>
+     <% if @system_messages.empty? %>
+ 	<li style="text-align:center;"><span class="asv_c2txt">暂无记录</span></li>
+ 	<% end %>
+ 	<% @system_messages.each do |message| %>
+ 	<li>
+      <div class="asv_c2t"><span class="asv_blue fl">学习提醒</span><span class="asv_c2time"><%= message["created_at"] %></span></div>
+      <div class="asv_c2txt">
+      <%= message.content %>
+      </div>
+      <div class="clear"></div>
+      </li>
+ 	 <% end %>
+    </ul>
+    <div class="clear"></div>
+    </div>
+    <div class="mpage">
+		<% if @page == 1 %>
+		<a class="mpage_a" href="javascript:void(0)">首页</a>
+		<a class="mpage_a" href="javascript:void(0)">上一页</a>
+		<% else %>
+	    	<a class="mpage_a" href="<%= user_messages_study_path(:page => 1) %>">首页</a>
+	    	<a class="mpage_a" href="<%= user_messages_study_path(:page => @page-1) %>">上一页</a>
+		<% end %>
+		<% @system_messages_count.times.each do |p| %>
+			<% if p+1 == @page %>
+				<a class="mpage_a mpage_cuta" href="<%= user_messages_study_path(:page => p+1) %>"><%= p+1 %></a>
+			<% else %>
+				<a class="mpage_a" href="<%= user_messages_study_path(:page => p+1) %>"><%= p+1 %></a>
+			<% end %>
+		<% end %>
+		<% if @page == @system_messages_count %>
+		<a class="mpage_a" href="javascript:void(0)">下一页</a>
+		<a class="mpage_a" href="javascript:void(0)">末页</a>
+		<% else %>
+	    	<a class="mpage_a" href="<%= user_messages_study_path(:page => @page+1) %>">下一页</a>
+	    	<a class="mpage_a" href="<%= user_messages_study_path(:page => @system_messages_count) %>">末页</a>
+		<% end %>
+</div>
+    
+ </div>
+</div>
+<div class="clear"></div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->

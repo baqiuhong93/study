@@ -1,0 +1,68 @@
+<% @_page_title =   "注入听课卡" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+ 	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 修改密码</span>
+</div>
+<div class="min whHd960 mt10">
+<%= render "public/left_nav2" %>
+<div class="minR">
+        	<div class="minR_bgwt  bd">
+            	<div class="ttBox3"><b class="icon1">选择产品</b></div>	
+                <div class="hy_grxxTab">
+		  <div class="mkc_t1 mkc_t4"><span class="fl"><%= @card.product_array.length %>个产品选<%= @card.select_num %>,必选产品<%= @card.must_num %></span></div>
+	  <div class="mkcList">
+	<%= form_for @card_no, :html => {:id => "card_product_select", :onsubmit => "return valid_card_product_select_form()"} do |f| -%>
+	<%= hidden_field_tag :used_card_no_id, params[:used_card_no_id] %>
+	   <ul>
+		<% @card.product_array.each do |product| %>
+	    	<li><span class="fl"><input id="product_ids" name="product_ids[]" type="checkbox" value="<%= product['id'] %>" /> <%= product["text"] %></span></li>
+		<% end %>
+		<li><span class="mcz_s1">&nbsp;<%= f.submit "", :class => "mcz_submit", :id => "select_product_btn" %></span></li>
+	   </ul>
+	  <% end -%>
+	  </div>
+		  
+		  
+                </div>
+            </div>
+        	
+        </div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function valid_card_product_select_form() {
+	if ($("[name='product_ids[]']:checked").length > <%= @card.select_num %>) {
+		alert("选择产品数量大于<%= @card.select_num %>！");
+		return false;
+	}
+	if ($("[name='product_ids[]']:checked").length != <%= @card.select_num %>) {
+		alert("请选择产品！");
+		return false;
+	}
+	return true;
+}
+$(function() {
+	$("[name='product_ids[]']").each(function(index) {
+		if(index < <%= @card.must_num %>) {
+			this.checked = true;
+			this.disabled = true;
+		}
+	});
+});
+</script>
+<% end -%>
+
+
+
+
+
+
+
+
+

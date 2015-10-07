@@ -1,0 +1,31 @@
+<%= render :partial => '/admin/public/index_actions' %>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+              <th>用户名</th>
+              <th>产品名称</th>
+              <th>知识点名称</th>
+              <th>创建时间</th>
+			  <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @notes.each do |note| %>
+      <tr>
+		  		<td><%= note.user_name %></td>
+		  		<td><%= note.product_name %></td>
+		  		<td><%= note.knowledge_tree_name %></td>
+		  		<td><%= format_date(note.updated_at) %></td>
+		        <td>
+		<% if can? :read, Note %>
+		  <%= link_to '详', admin_note_path(note), :title => '详细' %>
+		<% end %>
+  		<% if can? :destroy, Note %>
+            <%= link_to '删', admin_note_path(note), :method => :delete, :data => { :confirm => '确认删除?' } %>
+  		<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @notes, :renderer => BootstrapPagination::Rails %>

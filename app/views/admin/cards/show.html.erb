@@ -1,0 +1,52 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>名称:</strong></strong></td><td><%= @card.name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>简介:</strong></td><td><%= @card.description %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>使用次数:</strong></td><td><%= @card.used_num %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>类型:</strong></td><td><%= Card.group_hash[@card.group] %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>面值:</strong></td><td><%= @card.price %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>创建时间:</strong></td><td><%= format_date(@card.created_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>更新时间:</strong></td><td><%= format_date(@card.updated_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>上线时间:</strong></td><td><%= format_date(@card.onlined_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>过期时间:</strong></td><td><%= format_date(@card.expired_at) %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>属性:</strong></td><td><%= Card.card_type_hash[@card.card_type] %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>卡数量:</strong></td><td><%= @card.total_num %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>选择数量:</strong></td><td><%= @card.select_num %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>必选数量:</strong></td><td><%= @card.must_num %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>课程产品:</strong></td>
+		<td>
+			<% @card.product_array.each do |product| %>
+			<%= link_to product["text"], admin_product_path(:id => product["id"]) %> 
+			<% end %>
+		</td>
+	</tr>	
+</table>
+
+

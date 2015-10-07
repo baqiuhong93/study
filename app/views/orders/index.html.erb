@@ -1,0 +1,88 @@
+<% @_page_title =   "我的订单" %>
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mzhr_pos whHd960 mt10">
+ 	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 订单查询</span>
+</div>
+<div class="wg_sfTuShu mt10 whHd960">
+<div class="wg_aboutBox">
+<%= render "public/left_nav2" %>
+<div class="wg_aboutBoxR wg_aboutBoxRHd bd">
+                	<div class="wg_tt3"><b>我的订单记录</b></div>
+                    <div class="mg10TopPx hy_select bd">
+					<form action="<%= orders_path %>" method="get" accept-charset="utf-8">
+                        <ul>
+                            <li><span><%= label_tag :code, "订单号：" %></span>
+							<%= text_field_tag :code, params[:code], :class => "hy_ip" %>
+                            <span><%= label_tag :status, "订单状态：" %></span>
+                             <%= select_tag "status", options_from_collection_for_select(Order.status_hash, :first, :last, params[:status]), :prompt => "请选择" %>
+                            <span><%= label_tag :pay_type, "支付方式：" %></span>
+                            <%= select_tag "pay_type", options_from_collection_for_select(Order.pay_type_hash, :first, :last, params[:pay_type]), :prompt => "请选择" %></li>
+                            <li><input value="" class="mcz_submit mzk_selBtn" name="" type="submit" /></li>
+                        </ul>
+						</form>
+                        <div class=" clear"></div>
+                    </div>
+                    <div class="hy_MyKcTab">
+                        <table width="100%">
+                            <tr>
+                                <th>订单号</th>
+                                <th>课程名称</th>
+                                <th>订单金额</th>
+                                <th>支付方式</th>
+                                <th>下单时间</th>
+                                <th>订单状态</th>
+                                <th>操作</th>
+                            </tr>
+							<% if @orders.empty? %>
+	<tr>
+		<td colspan="7">暂无订单</td>
+	</tr>
+  <% end %>
+<% @orders.each do |order| %>
+  <tr>
+    <td><a href="<%= order_path(:id => order.code) %>" title="<%= order.code %>"><%= order.code %></a></td>
+    <td>
+	  <% order.order_items.each do |item| %>
+	  <a href="<%= product_path_domain(item.product_id) %>" target="_blank" title="<%= item.product_name %>"><%= item.product_name %></a><br> 
+	  <% end %>
+  </td>
+    <td>￥<%= format_money(order.total_amount) %></td>
+    <td><%= order.pay_type_text %></td>
+    <td><%= format_date(order.created_at) %></td>
+    <td><%= Order.status_hash[order.status] %></td>
+    <td>
+	<div class="btn1_1">
+    <div>
+        <a class="cl1" href="<%= order_path(:id => order.code) %>" title="查看">查看</a>
+	  <% if order.weifukuan? %>
+        <%= link_to '取消',
+                    order_path(:id => order.code),
+                    :method => :delete, :class => "cl2",
+                    :data => { :confirm => "确认取消订单(#{order.code})?" } %>
+	  <% end %>
+	  </div>
+	  <% if order.weifukuan? && (order.zhifubao? || order.kuaiqian?) %>
+	  <a class="cl3" href="<%= pay_order_path(:id => order.code) %>" title="付款" target="_system_pay">
+	  付款</a>
+	  <% end %>
+	  </div>
+    </td>
+  </tr>
+<% end %>
+                        </table>
+                    </div>
+                </div>
+<div class="mzk_txt3">未付款订单：<strong class="cor_red"><%= @weifukuan_count %></strong>  已付款订单：<strong class="cor_red"><%= @yifukuan_count %></strong>  已取消订单：<strong class="cor_red"><%= @yiquxiao_count %></strong>  订单总数：<strong class="cor_red"><%= @weifukuan_count + @yifukuan_count + @yiquxiao_count %></strong></div>
+<%= will_paginate @orders, :class => "mpage", :renderer => BootstrapPagination::Rails %>
+
+ </div>
+</div>
+
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+
+
+
+

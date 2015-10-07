@@ -1,0 +1,74 @@
+<%= render :partial => '/admin/public/index_actions' %>
+<%= form_for @search, :url => admin_products_path, :html => {:method => :get, :class => "form-horizontal"} do |f| %>
+<div class="control-group">
+	<%= f.label :id_eq, "ID：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.text_field :id_eq %>
+  </div>
+</div>
+<div class="control-group">
+	<%= f.label :name_contains, "名称：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.text_field :name_contains %>
+  </div>
+</div>
+<div class="control-group">
+	<%= f.label :group_eq, "卡类型：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.select :group_eq, Card.group_hash.map {|k,v| [v,k]}, :prompt => '请选择卡类型' %>
+  </div>
+</div>
+<div class="control-group">
+	<%= f.label :card_type_eq, "卡属性：", :class => "control-label" %>
+  <div class="controls">
+	  <%= f.select :card_type_eq, Card.card_type_hash.map {|k,v| [v,k]}, :prompt => '请选择卡属性' %>
+  </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+		<%= f.submit "查询", :disable_with => '查询ing...', :class => "btn" %>
+    </div>
+  </div>
+<% end %>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+              <th>名称</th>
+              <th>卡类型</th>
+              <th>卡面值</th>
+              <th>生效时间</th>
+              <th>过期时间</th>
+              <th>卡属性</th>
+              <th>卡数量</th>
+            <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @cards.each do |card| %>
+      <tr>
+		  		<td><%= card.name %></td>
+		  		<td><%= Card.group_hash[card.group] %></td>
+		  		<td><%= card.price %></td>
+		  		<td><%= format_date(card.onlined_at) %></td>
+		  		<td><%= format_date(card.expired_at) %></td>
+		  		<td><%= Card.card_type_hash[card.card_type] %></td>
+		  		<td><%= card.total_num %></td>
+		          <td>
+		<% if can? :read, Card %>
+		  <%= link_to '详', admin_card_path(card) %>
+		<% end %>
+		<% if can? :update, Card %>
+          <%= link_to '改', edit_admin_card_path(card) %>
+		<% end %>
+		<% if can? :read, CardNo %>
+		  <%= link_to '卡', admin_card_card_nos_path(card) %>
+		<% end %>
+		<% if can? :destroy, Card %>
+          <%= link_to '删', admin_card_path(card), :method => :delete, :data => { :confirm => '确认删除?' } %>
+		<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @cards, :renderer => BootstrapPagination::Rails %>

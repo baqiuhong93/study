@@ -1,0 +1,98 @@
+<% @_page_title =   "我的私信" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="main mt10">
+<%= render "public/left_nav2" %>
+<div class="mzh_r">
+ <div class="mzhr_pos">
+ <span class="fl">您当前的位置： <a href="<%= root_path %>">消息中心</a> >> 私信</span>
+ </div>
+ <div class="mzhr_con mt10">
+ <div class="mzhr_1t"><span class="um_pubT umm_rt mt10">与<%= User.find(params[:id]).name %>的私信</span></div>
+ <div class="msxCon">
+ <div class="asv_area1">
+    <div class="asv_t">
+    <div class="asv_arL">发送给：<span class="asv_blue"><%= User.find(params[:id]).name %></span></div>
+    <div class="fr font12">还可以输入文字<span id="char_count">300</span>字</div>
+    </div>
+    <textarea class="asv_areatxt" cols="" id="content" rows="" onkeyup="checkLen(this)" maxlength="300" placeholder="文字不能超过300字..."></textarea>
+    </div>
+ <div class="asv_submit"><input class="asv_btn" name="" type="button" value="" onclick="send_message_private()" /></div>
+ <div class="asv_c1List">
+     <ul id="message_private_ul">
+	     <% if @system_messages.empty? %>
+	 	<li style="text-align:center;"><span class="asv_c2txt">暂无记录</span></li>
+	 	<% end %>
+		<% @system_messages.each do |message| %>
+        <li>
+        <img class="asv_sqImg" src="<%= GlobalSettings.image_domain %>images/asv_bg2.jpg" width="22" height="34" />
+        <p><span class="asv_blue"><%= message.send_id == @current_user.uid ? "我" : message.send_user_name %>:</span> <%= message.content %></p>
+        <p><%= message.created_at.to_s.gsub("T"," ")[0..18] %></p>
+        </li>
+		<% end %>
+     </ul>
+    </div>
+ <div class="clear"></div>
+ </div>
+ </div>
+ 
+    <div class="mpage">
+		<% if @page == 1 %>
+		<a class="mpage_a" href="javascript:void(0)">首页</a>
+		<a class="mpage_a" href="javascript:void(0)">上一页</a>
+		<% else %>
+	    	<a class="mpage_a" href="<%= user_messages_private_show_path(:id => params[:id],:page => 1) %>">首页</a>
+	    	<a class="mpage_a" href="<%= user_messages_private_show_path(:id => params[:id],:page => @page-1) %>">上一页</a>
+		<% end %>
+		<% @system_messages_count.times.each do |p| %>
+			<% if p+1 == @page %>
+				<a class="mpage_a mpage_cuta" href="<%= user_messages_private_show_path(:id => params[:id],:page => p+1) %>"><%= p+1 %></a>
+			<% else %>
+				<a class="mpage_a" href="<%= user_messages_private_show_path(:id => params[:id],:page => p+1) %>"><%= p+1 %></a>
+			<% end %>
+		<% end %>
+		<% if @page == @system_messages_count %>
+		<a class="mpage_a" href="javascript:void(0)">下一页</a>
+		<a class="mpage_a" href="javascript:void(0)">末页</a>
+		<% else %>
+	    	<a class="mpage_a" href="<%= user_messages_private_show_path(:id => params[:id],:page => @page+1) %>">下一页</a>
+	    	<a class="mpage_a" href="<%= user_messages_private_show_path(:id => params[:id],:page => @system_messages_count) %>">末页</a>
+		<% end %>
+</div>
+ 
+</div>
+<div class="clear"></div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->
+<%= content_for :javascripts do -%>
+<script type="text/javascript" charset="utf-8">
+function checkLen(obj) {
+	var maxChars = 300;//最多字符数
+	if (obj.value.length > maxChars)
+		obj.value = obj.value.substring(0,maxChars);
+		var curr = maxChars - obj.value.length;
+		$("#char_count").text(curr.toString());
+}
+function send_message_private() {
+	var _content = $.trim($("#content").val());
+	if (_content == '') {
+		alert("请输入私信内容!");
+		return;
+	}
+	if (_content.length > 300) {
+		alert("私信内容不能超过300个字符!");
+		return;
+	}
+	$.post("/messages/private/create", {'content' : _content, 'receive_id' : <%= params[:id] %>}, function(data) {
+		if (data.status == "success") {
+			$("#content").val('');
+			$("#message_private_ul").prepend("<li><img class='asv_sqImg' src='<%= GlobalSettings.image_domain %>images/asv_bg2.jpg' width='22' height='34' /><p><span class='asv_blue'>我:</span> "+_content+"</p><p>" + new Date().format("yyyy-MM-dd h:mm:ss") + "</p></li>");
+		}
+		alert(data.msg);
+	});
+}
+</script>	
+<% end -%>

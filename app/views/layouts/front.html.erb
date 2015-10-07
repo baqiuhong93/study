@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><%= @_page_title %></title>
+<%= csrf_meta_tags %>
+<link href="<%= GlobalSettings.css_domain %>2015112/css/style.css" rel="stylesheet" type="text/css" />
+
+<link rel="Stylesheet" type="text/css" href="<%= GlobalSettings.css_domain %>mobTheme/StyleSheet.css" />
+<link rel="stylesheet" href="<%= GlobalSettings.css_domain %>mobTheme/idangerous.swiper.css" />
+<link rel="stylesheet" href="<%= GlobalSettings.css_domain %>mobTheme/style.css?v=1.8" />
+
+<%= yield :stylesheets %>
+<%= javascript_include_tag "front" %>
+</head>
+<body>
+<%= yield %>
+<%= yield :javascripts %>
+<script type="text/javascript" charset="utf-8">
+$(function() {
+	$.get("<%= user_messages_count_path %>", {"time" : new Date().getTime()}, function(data) {
+		if ($("#_private_message_count").length > 0) {
+			$("#_private_message_count").text(data.private_message_count);
+		} 
+		if($("#_system_message_count").length > 0) {
+			$("#_system_message_count").text(data.system_message_count);
+		} 
+		if($("#_study_message_count").length > 0) {
+			$("#_study_message_count").text(data.study_message_count)
+		}
+	});
+});
+</script>
+</body>
+</html>

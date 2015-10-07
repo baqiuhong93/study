@@ -1,0 +1,95 @@
+<% @_page_title =   "我的账户" %>
+<!--头部 开始-->
+<%= render "public/header" %>
+<!--头部 结束-->
+<div class="mt10 whHd960 mzhr_pos">
+	<span class="fl">您当前的位置： <a href="<%= root_path %>">我的课堂</a> >> 账户信息</span>
+</div>
+<div class="mt10 whHd960">
+<%= render "public/left_nav2" %>
+    <div class="wg_aboutBoxR wg_aboutBoxRHd bd">
+         <div class="wg_tt3"><b>账户信息</b></div>
+         <div class="mzhr_pub1 mt10"><b>账户余额</b></div>
+         <div class="dd_List bd">
+              <ul>
+                  <li>您的账户余额：<span class="cor_red">￥<%= format_money(@current_user.now_balance) %></span></li>
+                  <li><a href="<%= user_recharges_index_path %>" class="pubBtn1">立即充值</a></li>
+              </ul>
+              <div class="clear"></div>
+          </div>
+     <!--选项卡切换 开始-->
+        <div class="chgBtnList">
+            <ul>
+                <li class="<%= @record_type == 1 ? 'chgBtn chgCutBtn' : 'chgBtn' %>"><a href="<%= user_money_records_path %>">充值记录</a></li>
+                <li class="<%= @record_type == 2 ? 'chgBtn chgCutBtn' : 'chgBtn' %>"><a href="<%= user_money_records_path(:record_type => 2) %>">消费记录</a></li>
+            </ul>
+        </div>
+        <div class="chgConList">
+            <div class="chgCon">
+                <div class="hy_MyKcTab mcar_tab2 mt10">
+                <% if @record_type == 1 %>
+                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr class="mcar_th2">
+                    <th align="center">充值金额</th>
+                    <th align="center">支付类型</th>
+                    <th align="center">充值时间</th>
+                    <th align="center">状态</th>
+                    <th align="center">操作</th>
+                </tr>
+                <% @money_records.each do |money_record| %>
+                <tr>
+                <td align="center">￥<%= format_money(money_record.amount) %></td>
+                <td align="center"><%= Order.pay_type_hash[money_record.pay_type] %></td>
+                <td align="center"><%= format_date(money_record.created_at) %></td>
+                <td align="center"><span class="cor_green"><%= UserMoneyRecord.chongzhi_status_hash[money_record.status] %></span></td>
+                <td align="center">
+                <% if money_record.weifukuan? %>
+                <div class="btn1_1">
+                    <a class="cl1" href="<%= user_recharges_pay_path(:id => money_record.id) %>" target="_recharge_pay">支付</a>
+                </div>
+                <% end %>
+                </td>
+                </tr>
+                <% end %>
+                <% if @money_records.empty? %>
+                <tr>
+                <td align="center" colspan="5">暂无记录</td>
+                </tr>
+                <% end %>
+                </tbody>
+                </table>
+                <% elsif @record_type == 2 %>
+                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody><tr class="mcar_th2">
+                <th align="center">订单ID</th>
+                <th align="center">消费金额</th>
+                <th align="center">消费时间</th>
+                <th align="center">状态</th>
+                </tr>
+                <% @money_records.each do |money_record| %>
+                <tr>
+                <td align="center"><a href="<%= order_path(:id => money_record.order_code) %>"><%= money_record.order_code %></a></td>
+                <td align="center">￥<%= format_money(money_record.amount) %></td>
+                <td align="center"><%= format_date(money_record.created_at) %></td>
+                <td align="center"><%= UserMoneyRecord.xiaofei_status_hash[money_record.status] %></td>
+                </tr>
+                <% end %>
+                <% if @money_records.empty? %>
+                <tr>
+                <td align="center" colspan="4">暂无记录</td>
+                </tr>
+                <% end %>
+                </tbody></table>
+                <% end %>
+                <%= will_paginate @money_records, :class => "mpage", :renderer => BootstrapPagination::Rails %>
+                </div>
+            </div>
+        </div>
+     <!--End-->
+    </div>
+	<div class="clear"></div>
+</div>
+<!--尾部 开始-->
+<%= render "public/footer" %>
+<!--尾部 结束-->

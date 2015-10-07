@@ -1,0 +1,47 @@
+<%= render :partial => '/admin/public/actions' %>
+<table class="table table-bordered">
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>用户名:</strong></td>
+		<td><%= @user_classwork.user_name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>名称：</strong></td>
+		<td><%= @user_classwork.classwork.name %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>要求：</strong></td>
+		<td><%= @user_classwork.classwork.demand %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>开始时间:</strong></td>
+		<td><%= format_date(@user_classwork.classwork.start_at)[0..9] %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>结束时间:</strong></td>
+		<td><%= format_date(@user_classwork.classwork.end_at)[0..9] %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>状态：</strong></td>
+		<td><%= UserClasswork.status_hash[@user_classwork.status] %></td>
+	</tr>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>答案:</strong></td>
+		<td><%= @user_classwork.answer_text %></td>
+	</tr>
+	<% if !@user_classwork.answer_file.empty? %>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>答案附件:</strong></td>
+		<td><a href="<%= GlobalSettings.upload_view_url + @user_classwork.answer_file %>" target="_blank">下载</a></td>
+	</tr>
+	<% end %>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>回复:</strong></td>
+		<td><%= @user_classwork.reply_text %></td>
+	</tr>
+	<% if !@user_classwork.reply_file.empty? %>
+	<tr>
+		<td width="15%" style="text-align:right;"><strong>回复附件:</strong></td>
+		<td><a href="<%= GlobalSettings.upload_view_url + @user_classwork.reply_file %>" target="_blank">下载</a></td>
+	</tr>
+	<% end %>
+</table>

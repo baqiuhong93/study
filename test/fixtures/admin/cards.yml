@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  description: MyString
+  group: 1
+  price: 9.99
+  onlined_at: 2013-02-04 13:49:41
+  expired_at: 2013-02-04 13:49:41
+  card_type: 1
+  card_text: MyText
+  total_num: 1
+  status: 1
+
+two:
+  name: MyString
+  description: MyString
+  group: 1
+  price: 9.99
+  onlined_at: 2013-02-04 13:49:41
+  expired_at: 2013-02-04 13:49:41
+  card_type: 1
+  card_text: MyText
+  total_num: 1
+  status: 1

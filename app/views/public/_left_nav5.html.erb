@@ -1,0 +1,19 @@
+<div class="mzh_l">
+ <div class="mzh_1t">我的账户</div>
+ <div class="mzh_menu">
+  <ul>
+   <li><a class="<%= request.fullpath.start_with?('/accounts') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= accounts_index_path %>">我的课程</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/notes') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_notes_path %>">我的笔记</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/money_records') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_money_records_path %>">账户信息</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/recharges') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_recharges_index_path %>">我要充值</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/orders') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= orders_path %>">我的订单</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/card_nos') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= new_card_no_path %>">注卡</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/profile') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_profile_path %>">完善信息</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/password') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_password_path %>">修改密码</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/messages/system') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_messages_system_path %>">系统消息</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/messages/study') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_messages_study_path %>">学习提醒</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/messages/private') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= user_messages_private_path %>">私信</a></li>
+   <li><a class="<%= request.fullpath.start_with?('/classworks') ? 'mzh_1a mzh_1cuta' : 'mzh_1a' %>" href="<%= classworks_path %>">作业</a></li>
+  </ul>
+ </div>
+</div>
